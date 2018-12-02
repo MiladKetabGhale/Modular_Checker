@@ -1,0 +1,27 @@
+INCLUDES = .. $(CAKEMLDIR)/compiler $(CAKEMLDIR)/basis
+OPTIONS = QUIT_ON_FAILURE
+
+all: check_count check_countCompileTheory.uo
+.PHONY: all
+
+check_count: check_count.S basis_ffi.c Makefile
+	make
+
+check_count.S: *check_countCompileScript.sml
+
+basis_ffi.c: $(CAKEMLDIR)/basis/basis_ffi.c
+	$(CP) $< $@
+
+ifdef POLY
+HOLHEAP = heap
+PARENT_HOLHEAP = ../heap
+EXTRA_CLEANS = $(HOLHEAP) $(HOLHEAP).o
+all: $(HOLHEAP)
+
+BARE_DEPS = ../check_countProgTheory
+
+DEPS = $(patsubst %,%.uo,$(BARE_DEPS)) $(PARENTHEAP)
+
+$(HOLHEAP): $(DEPS)
+	$(protect $(HOLDIR)/bin/buildheap) -b $(PARENT_HOLHEAP) -o $(HOLHEAP) $(DEPS)
+endif
