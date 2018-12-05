@@ -875,5 +875,49 @@ Induct_on`np`
         >> rfs[subpile2_backlog_trans2_def])));
 
 
+val functional_to_logical_update_pile_ACT = Q.store_thm ("functional_to_logical_update_pile_ACT",
+ `! (qu: rat) (t: (cand # rat) list) l p1 p2. (ALL_DISTINCT (MAP FST p1)) /\ (ALL_DISTINCT (MAP FST p2))
+        /\   (update_cand_pile_ACT qu t l p1 p2) ==>
+              (!c. MEM c l ==> (!l'. MEM (c,l') p2 ==>
+                                         (MAP FST (LAST l') = MAP FST (LAST (get_cand_pile c p1)))
+                                      /\ (MAP SND (LAST l') = update_cand_transVal_ACT qu c t (LAST (get_cand_pile c p1)))))`,
+
+   Induct_on `l`
+     >- rw[]
+     >- (REPEAT STRIP_TAC
+       >- (FULL_SIMP_TAC list_ss []
+          >- (`? l1 l2. p2 = l1 ++ (c,l') ::l2` by metis_tac [MEM,MEM_SPLIT]
+           >> `MAP FST p2 = (MAP FST l1) ++ c :: (MAP FST l2)` by FULL_SIMP_TAC list_ss [FST,MAP_APPEND_TRIO]
+            >> `MEM c (MAP FST p2)` by FULL_SIMP_TAC list_ss [MEM_APPEND]
+             >> `l' = get_cand_pile h p2` by metis_tac [GET_CAND_PILE_MEM,EVERY_CAND_HAS_ONE_PILE]
+              >> metis_tac [update_cand_pile_ACT_def])
+          >- metis_tac [update_cand_pile_ACT_def])
+       >- (FULL_SIMP_TAC list_ss []
+         >- (`? l1 l2. p2 = l1 ++ (c,l') ::l2` by metis_tac [MEM,MEM_SPLIT]
+          >> `MAP FST p2 = (MAP FST l1) ++ c :: (MAP FST l2)` by FULL_SIMP_TAC list_ss [FST,MAP_APPEND_TRIO]
+           >> `MEM c (MAP FST p2)` by FULL_SIMP_TAC list_ss [MEM_APPEND]
+            >> `l' = get_cand_pile h p2` by metis_tac [GET_CAND_PILE_MEM,EVERY_CAND_HAS_ONE_PILE]
+             >> metis_tac[update_cand_pile_ACT_def])
+       >- metis_tac [update_cand_pile_ACT_def])));
+
+
+val logical_to_functional_update_pile_ACT = Q.store_thm ("logical_to_functional_update_pile_ACT",
+ `! (qu: rat) (t: (cand #rat) list) l p1 p2. (!c. MEM c l ==> MEM c (MAP FST p2)) /\
+                                            (!c. MEM c l ==> (!l'. MEM (c,l') p2 ==>
+                                              (MAP FST (LAST l') = MAP FST (LAST (get_cand_pile c p1)))
+                                                /\ (MAP SND (LAST l') = update_cand_transVal_ACT qu c t (LAST (get_cand_pile c p1))))) ==>
+                                                    (update_cand_pile_ACT qu t l p1 p2)`,
+
+    Induct_on `l`
+      >- rw [update_cand_pile_ACT_def]
+      >- ((REPEAT STRIP_TAC
+       >> rw[update_cand_pile_ACT_def])
+          >- (`MEM (h,get_cand_pile h p2) p2` by metis_tac [MEM,GET_CAND_PILE_MEM]
+            >> metis_tac [MEM])
+          >- (`MEM (h,get_cand_pile h p2) p2` by metis_tac [MEM,GET_CAND_PILE_MEM]
+            >> metis_tac [MEM])));
+
+
+
 
 val _ = export_theory();
