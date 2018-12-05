@@ -96,7 +96,13 @@ val ELECT_def = Define `
 
 
 val TRANSFER_EXCLUDED_def = Define `
-    TRANSFER_EXCLUDED (qu,st,l) j1 j2 <=> F`;
+    TRANSFER_EXCLUDED (qu,st,l) j1 j2 <=>
+      (? ba nba t nt p np bl nbl bl2 nbl2 e ne h nh.
+          (j1 = NonFinal (ba,t,p,bl,bl2,e,h))
+       /\ (TRANSFER_EXCLUDED_Auxiliary (qu,st,l) nba t p np bl2 nbl2 e h)
+       /\ (ba = []) /\ (t = nt) /\ (e = ne) /\ (h = nh) /\ (bl = nbl)
+       /\ (j2 = NonFinal (nba,nt,np,nbl,nbl2,ne,nh))) /\ F`;
+
 
 
 val _ = export_theory ();
