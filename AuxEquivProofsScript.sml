@@ -1,5 +1,5 @@
 open preamble AuxSpecTheory AuxBoolTheory ratTheory 
-      
+          
 val _ = new_theory "AuxEquivProofs";
 
 
@@ -874,5 +874,6 @@ Induct_on`np`
       >- (first_assum(qspecl_then [`bl`,`p`] strip_assume_tac)
         >> rfs[subpile2_backlog_trans2_def])));
 
- 
+
+
 val _ = export_theory();
