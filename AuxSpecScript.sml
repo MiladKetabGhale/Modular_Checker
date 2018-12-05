@@ -1,5 +1,5 @@
 open preamble
-
+ 
 val _ = new_theory "AuxSpec";
   
 (* Helper functions that have nothing to do with vote counting *)
@@ -35,6 +35,36 @@ val _ = Datatype `
      (* continuing *)               (cand list) )
   | Final
     (* winners *) (cand list)`;
+           
+
+val Count_Occurrences_def = Define `
+    Count_Occurrences (x: rat) (l: (((cand list) # rat) list)) <=>
+                         case l of
+                              [] => (0: num)
+			    | l0 ::ls => if (x = SND l0) then (1 + (Count_Occurrences x ls))
+                                         else Count_Occurrences x ls`;
+
+ 
+val Count_Occurrences_IsCorrect = Q.store_thm("Count_Occurrences_IsCorrect",
+ `! r l. Count_Occurrences r l = LENGTH (FILTER (\x.  (x = r)) (MAP SND l))`, 
+
+ Induct_on `l`
+    >- rw[Count_Occurrences_def]
+  
+    >- ((REPEAT STRIP_TAC 
+         >> Cases_on `r = SND h`)
+       >- (FULL_SIMP_TAC list_ss []
+         >> rw[Count_Occurrences_def])
+       >- (first_assum(qspecl_then [`r`] strip_assume_tac)
+         >> rw[Count_Occurrences_def])));
+
+
+val ReGroup_Piles_def = tDefine "ReGroup_Piles" `
+    ReGroup_Piles (l: ballots) <=> case l of
+                           [] => []
+			  |l0 ::ls => let k = Count_Occurrences (SND l0) ls in
+ 			                  (l0 :: (TAKE k ls)) :: (ReGroup_Piles (DROP k ls))` 
+(WF_REL_TAC `measure LENGTH ` >> simp[LENGTH])   
 
 
 (* The rules *)
