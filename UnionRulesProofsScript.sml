@@ -7,7 +7,7 @@ open preamble
      AuxRulesEquivProofsTheory
      UnionRulesSpecTheory
      UnionRulesBoolTheory
-                
+                      
 
 val _ = new_theory "UnionRulesProofs";
      
@@ -32,7 +32,7 @@ val HWIN_thm = Q.store_thm("HWIN_thm",
   \\ PairCases_on`p`
   \\ rw[HWIN_def,HWIN_dec_def]
   \\ metis_tac[HWIN_def,HWIN_dec_def])
-
+ 
 val Logical_elim_to_Functional_ELIM = Q.store_thm("Logical_elim_to_Functional_Elim",
  `!c qu st l j1 j2. ELIM_CAND c (qu,st,l) j1 j2 ==> ELIM_CAND_dec c (qu,st,l) j1 j2`,
   
@@ -45,7 +45,7 @@ val Logical_elim_to_Functional_ELIM = Q.store_thm("Logical_elim_to_Functional_El
      >> `!d. (d = c) ==> ?l. MEM (c,l) p`
               by metis_tac[GET_CAND_PILE_MEM,Valid_PileTally_def]
      >> metis_tac [Logical_subpile1_IMP_TheFunctional,Logical_subpile2_IMP_TheFunctional]);
-     
+      
        
 val Functional_Elim_to_Logical_elim = Q.store_thm("Functional_Elim_to_Logical_elim",
  `!c qu st l j1 j2. ELIM_CAND_dec c (qu,st,l) j1 j2 ==> ELIM_CAND c (qu,st,l) j1 j2`,
@@ -59,7 +59,7 @@ val Functional_Elim_to_Logical_elim = Q.store_thm("Functional_Elim_to_Logical_el
       >- rfs[ELIM_CAND_dec_def])	    
   >- rfs[ELIM_CAND_dec_def]);
 
- 
+  
 val Functional_Transfer_to_Logical_transfer = Q.store_thm("Functional_Transfer_to_Logical_transfer",
  `! st qu l j1 j2. TRANSFER_dec (qu,st,l) j1 j2 ==> TRANSFER (qu,st,l) j1 j2`,
 
@@ -75,19 +75,19 @@ val Functional_Transfer_to_Logical_transfer = Q.store_thm("Functional_Transfer_t
 		      TRANSFER_Auxiliary_dec_def]))
     >- rfs[TRANSFER_dec_def])
     >- rfs[TRANSFER_dec_def]);
-
-
+ 
+   
 val Logical_transfer_to_Functional_Transfer = Q.store_thm("Logical_transfer_to_Functional_Transfer",
  `! st qu l j1 j2. TRANSFER (qu,st,l) j1 j2 ==> TRANSFER_dec (qu,st,l) j1 j2`,
-
-  REPEAT STRIP_TAC
-   >> fs[TRANSFER_def,TRANSFER_dec_def] 
-    >> fs[Logical_TransferAux_to_Functional,Logical_subpile1_IMP_TheFunctional] 
-     >> `MEM c (MAP FST np)` by metis_tac[MEM_MAP,FST,TRANSFER_Auxiliary_def]
-      >> `!d. (d = c) ==> ?l. MEM (c,l) np` by metis_tac[GET_CAND_PILE_MEM,Valid_PileTally_def]
-       >> metis_tac[TRANSFER_Auxiliary_def,GET_CAND_PILE_MEM,Valid_PileTally_def,MEM_MAP,
-                    Logical_subpile2_IMP_TheFunctional]);
  
+  REPEAT STRIP_TAC
+   >> fs[TRANSFER_def,TRANSFER_dec_def]   
+    >> `MEM c (MAP FST np)` by metis_tac[MEM_MAP,FST,TRANSFER_Auxiliary_def]
+      >> `!d. (d = c) ==> ?l. MEM (c,l) np` by metis_tac[GET_CAND_PILE_MEM,Valid_PileTally_def]
+       >> metis_tac[Logical_TransferAux_to_Functional,    
+             Logical_subpile1_IMP_TheFunctional,Logical_subpile2_IMP_TheFunctional,TRANSFER_Auxiliary_def,
+	     GET_CAND_PILE_MEM,Valid_PileTally_def,MEM_MAP]);   
+        
      
 val Functional_to_Logical_elect = Q.store_thm("Functional_to_Logical_elect",
  `! st qu l j1 j2. ELECT_dec (qu,st,l) j1 j2 ==> ELECT (qu,st,l) j1 j2`,
@@ -141,12 +141,32 @@ val Logical_Count_to_Functional = Q.store_thm("Logical_Count_to_Functional",
                 Logical_CountAux_to_Functional,COUNT_Auxiliary_def]);
 
  
+
+val Logical_TransferExcluded_to_Functional = Q.store_thm("Logical_TransferExcluded_to_Functional",
+ `!qu st l j1 j2. TRANSFER_EXCLUDED (qu,st,l) j1 j2 ==> TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2`,
+ 
+   fs[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def]);
+  
+ 
+val Functional_TransferExcluded_to_Logical = Q.store_thm("Functional_TransferExcluded_to_Logical",
+ `!qu st l j1 j2. TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2 ==> TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2`,
+
+    rw[]);
+   
+       
 val TRANSFER_EXCLUDED_thm = Q.store_thm("TRANSFER_EXCLUDED_thm",
    `TRANSFER_EXCLUDED_dec = TRANSFER_EXCLUDED`,
-    simp[FUN_EQ_THM] 
-    >> qx_gen_tac`params`
-    >> PairCases_on `params`  
-    >> metis_tac[TRANSFER_EXCLUDED_def,TRANSFER_EXCLUDED_dec_def]);
+  
+        (simp[FUN_EQ_THM]    
+         >> qx_gen_tac`params`   
+          >> PairCases_on`params`   
+           >>  Cases)  
+             >-( Cases   
+               >- (PairCases_on`p`   
+                   >> PairCases_on `p'`
+		    >> simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def])  
+               >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def])           
+             >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def]);         
 
- 
+
 val _ = export_theory ();
