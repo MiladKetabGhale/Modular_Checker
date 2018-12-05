@@ -138,12 +138,34 @@ val Logical_Count_to_Functional = Q.store_thm("Logical_Count_to_Functional",
                 Logical_CountAux_to_Functional,COUNT_Auxiliary_def]);
 
 
+
+val Logical_TransferExcluded_to_Functional = Q.store_thm("Logical_TransferExcluded_to_Functional",
+ `!qu st l j1 j2. TRANSFER_EXCLUDED (qu,st,l) j1 j2 ==> TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2`,
+
+   fs[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def]);
+
+
+val Functional_TransferExcluded_to_Logical = Q.store_thm("Functional_TransferExcluded_to_Logical",
+ `!qu st l j1 j2. TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2 ==> TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2`,
+
+    rw[]);
+
+
 val TRANSFER_EXCLUDED_thm = Q.store_thm("TRANSFER_EXCLUDED_thm",
    `TRANSFER_EXCLUDED_dec = TRANSFER_EXCLUDED`,
-    simp[FUN_EQ_THM] 
-    >> qx_gen_tac`params`
-    >> PairCases_on `params`  
-    >> metis_tac[TRANSFER_EXCLUDED_def,TRANSFER_EXCLUDED_dec_def]);
+
+        (simp[FUN_EQ_THM]
+         >> qx_gen_tac`params`
+          >> PairCases_on`params`
+           >>  Cases)
+             >-( Cases
+               >- (PairCases_on`p`
+                   >> PairCases_on `p'`
+                    >> simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def])
+               >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def])         
+             >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def]);
+
+
 
 
 val _ = export_theory ();
