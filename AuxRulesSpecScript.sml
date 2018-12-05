@@ -25,9 +25,7 @@ val ELIM_CAND_Auxiliary_def = Define `
                       (np: piles) (bl2: cand list) bl2' (e: cand list) 
                       (h: cand list) nh <=>
    
-        (((bl2 = []) \/ ((~ (bl2 = [])) /\ (FLAT (get_cand_pile (HD bl2) p) = [])))
-(*     /\ (bl = []) /\ (bl' = [])
-     /\ (ba = []) *)
+        (bl2 = [])
      /\ Valid_Init_CandList l
      /\ (!c'. MEM c' (h++e) ==> (MEM c' l))
      /\ ALL_DISTINCT (h++e)
@@ -40,9 +38,8 @@ val ELIM_CAND_Auxiliary_def = Define `
      /\ (!c'. (MEM c' h ==> (?x. MEM (c',x) t /\ ( x < qu))))
      /\ MEM c h
      /\ (!d. (MEM d h ==> (?x y. (MEM (c,x) t) /\ (MEM (d,y) t) /\ ( x <= y))))
-     /\ equal_except c nh h)`;
+     /\ equal_except c nh h`;
   
-(*  /\ (bl2' = c :: bl2) :: to be added for Vic and Tasmania *)    
 
 (* Auxiliary TRANSFER rule *)
 
@@ -50,10 +47,7 @@ val TRANSFER_Auxiliary_def = Define `
   TRANSFER_Auxiliary ((qu,st,l):params) (t: tallies)
                            (p: piles) (p': piles) (bl: cand list) (bl2: cand list) 
                            (e: cand list) (h: cand list) <=>
-(*    ? nba t p bl e h nbl np.
-     (j1 = NonFinal ([], t, p, bl, [], e, h)) *)
-        ((bl2 = []) \/ ((bl2 <> []) /\ ((FLAT (get_cand_pile (HD bl2) p)) = [])))
-(*     /\ (ba = []) *)
+        (bl2 = [])
      /\ (bl <> [])
      /\ (LENGTH e < st)
      /\ (!d. MEM d (h++e) ==> MEM d l)
@@ -64,8 +58,6 @@ val TRANSFER_Auxiliary_def = Define `
      /\ (Valid_Init_CandList l)
      /\ ALL_DISTINCT (MAP FST t)
      /\ (!c'. (MEM c' h ==> (?x. MEM (c',x) t /\ ( x < qu))))`;
-(*
-           /\ (j2 = NonFinal (nba, t, np, nbl, [], e, h))`; *)
 
 (* Auxiliary COUNT rule *)
 
@@ -73,8 +65,6 @@ val COUNT_Auxiliary_def = Define `
         (COUNT_Auxiliary ((qu, st, l): params) (ba: ballots) (ba': ballots) (t: tallies)
                          (t': tallies) (p: piles) (p': piles) (e: cand list) (h: cand list)) <=> 
 
-(*? ba t nt p np bl bl2 e h.
-          (j1 = NonFinal (ba, t, p, bl, bl2, e, h)) *)
           (!d. MEM d (h++e) ==> MEM d l)
        /\ ALL_DISTINCT (h++e)
        /\ (Valid_PileTally t l)
@@ -89,9 +79,6 @@ val COUNT_Auxiliary_def = Define `
        /\ (ba <> [])
        /\ (h <> [])
        /\ (ba' = []) `;
-(*
-       /\ (j2 = NonFinal ([], nt, np, bl, bl2, e, h)))`;
-*)
 
 (* Auxiliary ELECT rule *)
 
@@ -99,8 +86,6 @@ val ELECT_Auxiliary_def = Define `
   ELECT_Auxiliary ((qu,st,l):params) (ba: ballots) (t: tallies)
                    (p: piles) (p': piles) bl bl' (e: cand list) e' (h: cand list) h' <=>
  
-(* (? t p bl e h nh ne np nbl l1 .
-    (j1 = NonFinal ([], t, p, bl, [], e, h)) *)
     ? l1. 
        (l1 <> [])
     /\ (SORTED (tally_comparison t) l1)
@@ -127,8 +112,32 @@ val ELECT_Auxiliary_def = Define `
     /\ (Valid_PileTally p' l)
     /\ (!c. MEM c e' ==> MEM c l)
     /\ (!c. MEM c h ==> MEM c l)`;
-(*
-    /\ (j2 = NonFinal ([], t, np, nbl, [], ne, nh)))`;
-*)
+
+
+
+val TRANSFER_EXCLUDED_Auxiliary_def = Define `
+       TRANSFER_EXCLUDED_Auxiliary ((qu,st,l):params) ba' (t: tallies)
+                           (p: piles) (p': piles) (bl2: cand list) bl2'
+                           (e: cand list) (h: cand list) <=>
+      ? bs c.
+        (bl2 = c :: bs)
+     /\ ((MEM (c, []) p' ==> (bl2' = []))
+        /\ (~ MEM (c, []) p' ==> (bl2' = bl2)))
+     /\ (LENGTH e < st)
+     /\ (!d. MEM d (h++e) ==> MEM d l)
+     /\ ALL_DISTINCT (h++e)
+     /\ (Valid_PileTally t l)
+     /\ (Valid_PileTally p l)
+     /\ ALL_DISTINCT (MAP FST p')
+     /\ (Valid_PileTally p' l)
+     /\ (Valid_Init_CandList l)
+     /\ ALL_DISTINCT (MAP FST t)
+     /\ (!c'. (MEM c' h ==> (?x. MEM (c',x) t /\ ( x < qu))))
+     /\ (!d'. ~ MEM d' [c] ==>
+        (!l'. (MEM (d',l') p ==> MEM (d',l') p')) /\ (!l'. (MEM (d',l') p' ==> MEM (d',l') p)))
+     /\ ? xs. xs = ReGroup_Piles (QSORT3 (\x y. (SND x) <= (SND y)) (FLAT (get_cand_pile c p)))
+        /\ (ba' = LAST xs)
+        /\ MEM (c, TAKE ((LENGTH xs) - 1) xs) p' `;
+
 
 val _ = export_theory ();
