@@ -55,11 +55,11 @@ val subpile2_backlog_trans2_def = Define`
     subpile2_backlog_trans2 bl (ps:piles) p1 ⇔
       EVERY (λp. if MEM (FST p) bl then T else MEM p p1) ps`; 
 
- 
+(* 
 val subpile_MEM_def = Define `
     (subpile_MEM c p1 (ps: piles)) <=>
       EVERY (λp. if (~ (c = (FST p))) then MEM p p1 else T) ps`;
-
+*)
 
 val first_continuing_cand_dec_def = Define `
   (first_continuing_cand_dec (c:cand) ([]: cand list)  (h: cand list) ⇔ F) /\
