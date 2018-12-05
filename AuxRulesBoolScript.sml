@@ -8,10 +8,7 @@ val ELIM_CAND_Auxiliary_dec_def = Define `
                            (p: piles) (p': piles) (bl2: cand list) bl2' 
                            (e: cand list) (h: cand list) h') <=>  
      
-              ((NULL bl2) \/ (~ NULL bl2 /\ (NULL (FLAT (get_cand_pile (HD bl2) p)))))
-          (* /\ (NULL ba) 
-           /\ (NULL bl)
-           /\ (NULL bl') *) 
+              (NULL bl2)
            /\ (LENGTH (e ++ h) > st) /\ (LENGTH e < st)
            /\ (¬(NULL l)) /\ (ALL_DISTINCT l)
            /\ (list_MEM_dec (h++e) l)
@@ -25,14 +22,12 @@ val ELIM_CAND_Auxiliary_dec_def = Define `
            /\ (h' = equal_except_dec c h)
            /\ (bigger_than_cand c t h)`;
 
-(* /\ (bl2' = c :: bl2) :: this condition must be added to STVs such as Victoria and Tasmania *)
 
 val TRANSFER_Auxiliary_dec_def = Define `
   (TRANSFER_Auxiliary_dec ((qu,st,l):params) (t: tallies)
                            (p: piles) (p': piles) (bl: cand list) (bl2: cand list) 
                            (e: cand list) (h: cand list))  ⇔
-      ((NULL bl2) \/ (~ NULL bl2 /\ (NULL (FLAT (get_cand_pile (HD bl2) p)))))
-(*   /\ (NULL ba) *) 
+      (NULL bl2) 
    /\ (LENGTH e < st)
    /\ (list_MEM_dec (h++e) l)
    /\ ALL_DISTINCT (h++e)
@@ -43,16 +38,11 @@ val TRANSFER_Auxiliary_dec_def = Define `
    /\ (ALL_DISTINCT (MAP FST t))
    /\ (less_than_quota qu t h)
    /\ (~ NULL bl)`;
-(* /\
-  (TRANSFER_Auxiliary_dec _ (Final _) _ = F) /\
-  (TRANSFER_Auxiliary_dec _ _ (Final _) = F)`; *)
 
 
 val COUNT_Auxiliary_dec_def = Define `
    (COUNT_Auxiliary_dec ((qu, st, l): params) (ba: ballots) (ba': ballots) (t: tallies)
                          (t': tallies) (p: piles) (p': piles) (e: cand list) (h: cand list)) 
-      (* (NonFinal (ba, t, p, bl, bl2, e, h))
-       (NonFinal (ba', t', p', bl', bl2', e', h')) *) ⇔
    
        ALL_DISTINCT (h++e)
     /\ ALL_DISTINCT (MAP FST p)
@@ -68,16 +58,11 @@ val COUNT_Auxiliary_dec_def = Define `
     /\ (~ NULL ba)
     /\ (~ NULL h)
     /\ (NULL ba')`;
-(* /\
-   (COUNT_Auxiliary_dec _ (Final _) _ = F) /\
-   (COUNT_Auxiliary_dec _ _ (Final _) = F)`; *)
 
 
 val ELECT_Auxiliary_dec = Define `
      (ELECT_Auxiliary_dec ((qu,st,l): params) (ba: ballots) (t: tallies)
-                          (p: piles) (p': piles) bl bl' (e: cand list) e' (h: cand list) h'
-       (*    (NonFinal (ba, t, p, bl, bl2, e, h))
-           (NonFinal (ba', t', p', bl', bl2', e',h')) *) <=>
+                          (p: piles) (p': piles) bl bl' (e: cand list) e' (h: cand list) h' <=>
               let (l1 = (DROP (LENGTH bl) bl'))
                  in
                    (SORTED (tally_comparison t) l1)
@@ -101,14 +86,39 @@ val ELECT_Auxiliary_dec = Define `
                 /\ (~ NULL l)
                 /\ ALL_DISTINCT l
                 /\ (bl = TAKE (LENGTH bl) bl') 
-          (*      /\ (bl' = bl ++ l1) *)
                 /\ (Valid_PileTally_dec1 p l) /\ (Valid_PileTally_dec2 p l)
                 /\ (Valid_PileTally_dec1 p' l) /\ (Valid_PileTally_dec2 p' l)
                 /\ (Valid_PileTally_dec1 t l) /\ (Valid_PileTally_dec2 t l)
                 /\ (list_MEM_dec e' l)
                 /\ (list_MEM_dec h l))`;
-(* /\
-     (ELECT_Auxiliary_dec _ (Final _) _ = F) /\
-     (ELECT_Auxiliary_dec _ _ (Final _) = F)`; *)
+
+
+
+val TRANSFER_EXCLUDED_Auxiliary__dec_def = Define `
+       TRANSFER_EXCLUDED_Auxiliary_dec ((qu,st,l):params) ba' (t: tallies)
+                           (p: piles) (p': piles) (bl2: cand list) bl2'
+                           (e: cand list) (h: cand list) <=>
+       case bl2 of
+         c :: ls =>
+             (case NULL (get_cand_pile c p') of
+                T => (NULL bl2')
+               |_ => (bl2' = bl2))
+          /\ (LENGTH e) < st
+          /\ (list_MEM_dec (h ++ e) l)
+          /\ (ALL_DISTINCT (h ++ e)) /\ (ALL_DISTINCT (MAP FST p'))
+          /\ (Valid_PileTally_dec1 t l) /\ (Valid_PileTally_dec2 t l)
+          /\ (Valid_PileTally_dec1 p l) /\ (Valid_PileTally_dec2 p l)
+          /\ (Valid_PileTally_dec1 p' l) /\ (Valid_PileTally_dec2 p' l)
+          /\ (~ NULL l) /\ (ALL_DISTINCT l)
+          /\ ALL_DISTINCT (MAP FST t)
+          /\ (less_than_quota qu t h)
+          /\ (let xs = ReGroup_Piles (QSORT3 (\x y. (SND x) <= (SND y)) (FLAT (get_cand_pile c p)))
+               in
+                 (ba' = LAST xs) /\ (MEM (c, (TAKE ((LENGTH xs) - 1) xs)) p'))
+          /\ (subpile2_backlog_trans2 [c] p p') /\ (subpile2_backlog_trans2 [c] p' p)
+         | _ => F `;
+
+
+
 
 val _ = export_theory ();
