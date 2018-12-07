@@ -5,27 +5,29 @@ open preamble
      AuxRulesSpecTheory
      AuxRulesBoolTheory
      ratTheory
-              
+                               
   
 val _ = new_theory "AuxRulesEquivProofs"
-     
+       
+ 
 
 val Logical_ElimAux_to_Functional = Q.store_thm ("Logical_ElimAux_to_Functional",
  `!st qu l c t p np bl2 nbl2 e h nh.
         ELIM_CAND_Auxiliary c (qu,st,l) t p np bl2 nbl2 e h nh ==> (ELIM_CAND_Auxiliary_dec c (qu,st,l) t p np  bl2 nbl2 e h nh)`,
-
-   REPEAT STRIP_TAC >> fs[ELIM_CAND_Auxiliary_def,ELIM_CAND_Auxiliary_dec_def]
-                >> `MEM c (MAP FST p)` by metis_tac [Valid_PileTally_def,FST,MAP]
-                >> `!d. MEM d h ==> MEM d (MAP FST p)` by metis_tac [Valid_PileTally_def]
+ 
+   REPEAT STRIP_TAC >> fs[ELIM_CAND_Auxiliary_def,ELIM_CAND_Auxiliary_dec_def]  
+		>> `MEM c (MAP FST p)` by metis_tac [Valid_PileTally_def,FST,MAP] 
+                >> `!d. MEM d h ==> MEM d (MAP FST p)` by metis_tac [Valid_PileTally_def]  
                 >> fs [Valid_Init_CandList_def,NULL,NULL_EQ,
-                       PileTally_to_PileTally_DEC2,PileTally_to_PileTally_DEC1,
-                       Valid_PileTally_def,EQE_IMP_REMOVE_ONE_CAND,
-                       LogicalLessThanQu_IMP_less_than_quota,Valid_PileTally_def,ALOOKUP_def,
-                       Logical_bigger_than_cand_IMP_TheFunctional]
-                >> `!(l1:cand list) l2 (c':cand). MEM c' l1 \/ MEM c' l2 ==> MEM c' (l1++l2)`
-                     by FULL_SIMP_TAC list_ss [MEM,MEM_APPEND]
-                >> metis_tac[Logical_list_MEM_VICE_VERCA_TheFunctional,MEM_APPEND,MEM]);
-
+	               PileTally_to_PileTally_DEC2,PileTally_to_PileTally_DEC1,
+		       Valid_PileTally_def,EQE_IMP_REMOVE_ONE_CAND,
+		       LogicalLessThanQu_IMP_less_than_quota,Valid_PileTally_def,ALOOKUP_def,
+		       Logical_bigger_than_cand_IMP_TheFunctional]
+		>> `!(l1:cand list) l2 (c':cand). MEM c' l1 \/ MEM c' l2 ==> MEM c' (l1++l2)`
+                     by FULL_SIMP_TAC list_ss [MEM,MEM_APPEND]  
+                >> metis_tac[Logical_list_MEM_VICE_VERCA_TheFunctional,MEM_APPEND,MEM]);    
+  
+  
 val Functional_ElimAux_to_Logical = Q.store_thm ("Functional_ElimAux_to_Logical",
  `!st qu l c t p np bl2 nbl2 e h nh.
      ELIM_CAND_Auxiliary_dec c (qu,st,l) t p np bl2 nbl2 e h nh ==> ELIM_CAND_Auxiliary c (qu,st,l) t p np bl2 nbl2 e h nh`,
@@ -59,8 +61,8 @@ val Functional_ElimAux_to_Logical = Q.store_thm ("Functional_ElimAux_to_Logical"
                          by metis_tac [MEM_APPEND,Logical_list_MEM_VICE_VERCA_TheFunctional]
                      >> `!d. MEM d h ==> MEM d (MAP FST t)` by metis_tac [PileTally_DEC2_IMP_PileTally]
                      >> metis_tac [PileTally_to_PileTally_DEC2,bigger_than_cand_LogicallyOK]));
-
- 
+		     
+       
 val Logical_TransferAux_to_Functional = Q.store_thm ("Logical_TransferAux_to_Functional",
  `! st qu l t p np bl bl2 e h. TRANSFER_Auxiliary (qu,st,l) t p np bl bl2 e h
              ==> TRANSFER_Auxiliary_dec (qu,st,l) t p np bl bl2 e h`,
@@ -73,8 +75,8 @@ val Logical_TransferAux_to_Functional = Q.store_thm ("Logical_TransferAux_to_Fun
                metis_tac [Logical_list_MEM_VICE_VERCA_TheFunctional])
         >- fs[PileTally_to_PileTally_DEC1,Valid_PileTally_def,PileTally_to_PileTally_DEC2,NULL_EQ,NULL,
 	      Valid_Init_CandList_def,LogicalLessThanQu_IMP_less_than_quota,MEM]));
-
-     
+      
+    
 val Functional_TransferAux_to_Logical = Q.store_thm("Functional_TransferAux_to_Logical",
  `! st qu l t p np bl bl2 e h. TRANSFER_Auxiliary_dec (qu,st,l) t p np bl bl2 e h
                    ==> TRANSFER_Auxiliary (qu,st,l) t p np bl bl2 e h`,
@@ -96,8 +98,7 @@ val Functional_TransferAux_to_Logical = Q.store_thm("Functional_TransferAux_to_L
                          by metis_tac [MEM_APPEND,Logical_list_MEM_VICE_VERCA_TheFunctional]
 		     >> `!d. MEM d h ==> MEM d (MAP FST t)` by metis_tac [PileTally_DEC2_IMP_PileTally]
                      >> metis_tac[PileTally_to_PileTally_DEC2,less_than_qu_IMP_LogicalLessThanQuota]));  
-   
-  
+      
 
 val Logical_CountAux_to_Functional = Q.store_thm ("Logical_CountAux_to_Functional",
  `! (st: num) (qu: rat) l ba nba t nt p np e h.
@@ -118,7 +119,7 @@ val Functional_COUNTAux_to_Logical = Q.store_thm("Functional_COUNTAux_to_Logical
 		  Valid_PileTally_def,PileTally_to_PileTally_DEC1,PileTally_to_PileTally_DEC2,
 	          Valid_Init_CandList_def,NULL_EQ,NULL,Valid_PileTally_def,
 	          PileTally_DEC1_to_PileTally,PileTally_DEC2_IMP_PileTally]);	   		      
-   
+    
 val TAKE_DROP_LENGTH_BACKLOG = Q.store_thm ("TAKE_DROP_LENGTH_BACKLOG",
  `! bl nbl (l1: cand list). nbl = bl ++ l1 ==> (bl = TAKE (LENGTH bl) nbl) /\ (l1 = DROP (LENGTH bl) nbl)`, 
   
@@ -202,6 +203,7 @@ val Functional_ElectAux_to_Logical = Q.store_thm ("Functional_ElectAux_to_Logica
        >- metis_tac [Logical_list_MEM_VICE_VERCA_TheFunctional]
        >- metis_tac [Logical_list_MEM_VICE_VERCA_TheFunctional])); 
 
+
 val Logical_TransferExcludedAux_to_Functional = Q.store_thm("Logical_TransferExcludedAux_to_Functional",
  `! qu st l ba' t p p' bl2 bl2' e h. TRANSFER_EXCLUDED_Auxiliary (qu,st,l) ba' t p p' bl2 bl2' e h
                                         ==> TRANSFER_EXCLUDED_Auxiliary_dec (qu,st,l) ba' t p p' bl2 bl2' e h`, 
@@ -272,7 +274,37 @@ val Functional_TransferExcluded_Aux_to_Logical = Q.store_thm("Functional_Transfe
                     >> metis_tac[PileTally_to_PileTally_DEC2,less_than_qu_IMP_LogicalLessThanQuota])    
          >- metis_tac[Functional_to_Logical_subpile2_backlog_trans2,MEM])); 
        
+ 
 
+val Functional_EwinAux_to_Logical = Q.store_thm("Functional_EwinAux_to_Logical",
+ `! st qu l j1 j2. EWIN_Auxiliary_dec (qu,st,l) j1 j2 ==> EWIN_Auxiliary (qu,st,l) j1 j2`,
+
+   (rw[] 
+     >> Cases_on`j1`)
+       >- (Cases_on`j2`
+            >- rfs[EWIN_Auxiliary_dec_def]
+            >- rfs[EWIN_Auxiliary_dec_def,EWIN_Auxiliary_def])
+         >- rfs[EWIN_Auxiliary_dec_def]);
+
+ val Logical_EwinAux_to_Functional = Q.store_thm("Logical_EwinAux_to_Functional",
+  `! st qu l j1 j2. EWIN_Auxiliary (qu,st,l) j1 j2 ==> EWIN_Auxiliary_dec (qu,st,l) j1 j2`,
+
+    rfs[EWIN_Auxiliary_def,EWIN_Auxiliary_dec_def]);
+  
+val Functional_HwinAux_to_Logical = Q.store_thm("Functional_HwinAux_to_Logical",
+ `! st qu l j1 j2. HWIN_Auxiliary_dec (qu,st,l) j1 j2 ==> HWIN_Auxiliary (qu,st,l) j1 j2`,
+ 
+    (rw[]  
+     >> Cases_on`j1`) 
+       >- (Cases_on`j2` 
+            >- rfs[HWIN_Auxiliary_dec_def] 
+            >- rfs [HWIN_Auxiliary_dec_def,HWIN_Auxiliary_def,LENGTH_APPEND,NULL,NULL_EQ])   
+         >- rfs[HWIN_Auxiliary_dec_def]);
+  
+val Logical_HwinAux_to_Functional = Q.store_thm("Logical_HwinAux_to_Functional",
+ `! st qu l j1 j2. HWIN_Auxiliary (qu,st,l) j1 j2 ==> HWIN_Auxiliary_dec (qu,st,l) j1 j2`,
+ 
+      rfs[HWIN_Auxiliary_def,HWIN_Auxiliary_dec_def,LENGTH_APPEND,NULL,NULL_EQ]);
 
 
 
