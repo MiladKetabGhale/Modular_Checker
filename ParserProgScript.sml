@@ -1,9 +1,11 @@
-open preamble basis CheckerProgTheory myparserTheory
+open preamble basis AuxTransProgTheory  myparserTheory
 
 val _ = new_theory"ParserProg";
 
-val _ = translation_extends"CheckerProg"
+val _ = translation_extends"AuxTransProg";
 
+(*val _ = translation_extends"UnionTranslationProg";
+*)
 val r = translate OPTION_BIND_def;
 val r = translate OPT_MMAP_def;
 val r = translate parse_number_def;
