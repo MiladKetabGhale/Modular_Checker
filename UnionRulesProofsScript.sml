@@ -7,7 +7,7 @@ open preamble
      AuxRulesEquivProofsTheory
      UnionRulesSpecTheory
      UnionRulesBoolTheory
-                      
+                        
 
 val _ = new_theory "UnionRulesProofs";
      
@@ -22,7 +22,7 @@ val EWIN_thm = Q.store_thm("EWIN_thm",
   \\ PairCases_on`p`
   \\ rw[EWIN_def,EWIN_dec_def] 
   \\ metis_tac[]);
-  
+   
 val HWIN_thm = Q.store_thm("HWIN_thm",
   `HWIN_dec = HWIN`, 
   simp[FUN_EQ_THM]
@@ -88,36 +88,34 @@ val Logical_transfer_to_Functional_Transfer = Q.store_thm("Logical_transfer_to_F
              Logical_subpile1_IMP_TheFunctional,Logical_subpile2_IMP_TheFunctional,TRANSFER_Auxiliary_def,
 	     GET_CAND_PILE_MEM,Valid_PileTally_def,MEM_MAP]);   
         
-     
+      
 val Functional_to_Logical_elect = Q.store_thm("Functional_to_Logical_elect",
  `! st qu l j1 j2. ELECT_dec (qu,st,l) j1 j2 ==> ELECT (qu,st,l) j1 j2`,
   
- Cases_on `j1`
-  >- (Cases_on `j2`   
-     >- (REPEAT STRIP_TAC >> PairCases_on`p` >> PairCases_on`p'`
-      >> fs[ELECT_dec_def,ELECT_def] 
-       >> MAP_EVERY qexists_tac [`DROP (LENGTH p3) p'3`]
+ Cases_on `j1` 
+  >- (Cases_on `j2`    
+     >- (REPEAT STRIP_TAC >> PairCases_on`p` >> PairCases_on`p'` 
+      >> fs[ELECT_dec_def,ELECT_def]  
+       >> MAP_EVERY qexists_tac [`DROP (LENGTH p3) p'3`] 
         >> `p'3 = p3 ++ (DROP (LENGTH p3) p'3)` by
           metis_tac[ELECT_Auxiliary_dec_def,TAKE_DROP,DROP_LENGTH,TAKE_DROP_LENGTH_BACKLOG,APPEND_11] 
        >> metis_tac[Functional_ElectAux_to_Logical,functional_to_logical_update_pile,
                     ELECT_Auxiliary_dec_def,NULL,NULL_EQ])    
      >- rfs[ELECT_dec_def]) 
   >- rfs[ELECT_dec_def]);     
-  
-  
+   
+
 val Logical_to_Functional_elect = Q.store_thm ("Logical_to_Functional_elect",
  `! st qu l j1 j2. ELECT (qu,st,l) j1 j2 ==> ELECT_dec (qu,st,l) j1 j2`,
-
+ 
  REPEAT STRIP_TAC  
   >> fs[ELECT_def,ELECT_dec_def]  
-  >> fs[Logical_ElectAux_to_Functional]  
-  >> fs[Logical_ElectAux_to_Functional]  
-  >> `DROP (LENGTH bl) (bl ++ l1) = l1` by metis_tac[DROP_LENGTH]  
-  >> rw[]  
-  >> rfs[ELECT_Auxiliary_def] 
+  >> `DROP (LENGTH bl) (bl ++ l1) = l1` by metis_tac[DROP_LENGTH]    
+  >> fs[Logical_ElectAux_to_Functional]
+  >> rfs[ELECT_Auxiliary_def]  
   >> `!c. MEM c l1 ==> MEM c (MAP FST np)` by metis_tac [ELECT_Auxiliary_def,MEM,Valid_PileTally_def]
-  >> metis_tac[logical_to_functional_update_pile]) 
- 
+  >> metis_tac[logical_to_functional_update_pile]);   
+  
  
 val Functional_Count_to_Logical = Q.store_thm("Functional_Count_to_Logical",
  `! st qu l j1 j2. COUNT_dec (qu,st,l) j1 j2 ==> COUNT (qu,st,l) j1 j2`,
@@ -141,32 +139,27 @@ val Logical_Count_to_Functional = Q.store_thm("Logical_Count_to_Functional",
                 Logical_CountAux_to_Functional,COUNT_Auxiliary_def]);
 
  
-
-val Logical_TransferExcluded_to_Functional = Q.store_thm("Logical_TransferExcluded_to_Functional",
- `!qu st l j1 j2. TRANSFER_EXCLUDED (qu,st,l) j1 j2 ==> TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2`,
  
-   fs[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def]);
+val TRANSFER_EXCLUDED_Auxiliary_thm = Q.store_thm("TRANSFER_EXCLUDED_Auxiliary_thm",
+ `TRANSFER_EXCLUDED_Auxiliary_dec = TRANSFER_EXCLUDED_Auxiliary`,
+   simp[FUN_EQ_THM,Logical_TransferExcludedAux_to_Functional,Functional_TransferExcluded_Aux_to_Logical,
+        FORALL_PROD,EQ_IMP_THM]);
   
- 
-val Functional_TransferExcluded_to_Logical = Q.store_thm("Functional_TransferExcluded_to_Logical",
- `!qu st l j1 j2. TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2 ==> TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2`,
 
-    rw[]);
-   
-       
 val TRANSFER_EXCLUDED_thm = Q.store_thm("TRANSFER_EXCLUDED_thm",
    `TRANSFER_EXCLUDED_dec = TRANSFER_EXCLUDED`,
-  
-        (simp[FUN_EQ_THM]    
-         >> qx_gen_tac`params`   
-          >> PairCases_on`params`   
-           >>  Cases)  
-             >-( Cases   
-               >- (PairCases_on`p`   
-                   >> PairCases_on `p'`
-		    >> simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def])  
-               >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def])           
-             >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def]);         
+ 
+        (simp[FUN_EQ_THM]
+	  >> qx_gen_tac`params`     
+          >> PairCases_on`params`     
+           >>  Cases)     
+             >-(Cases       
+               >- (PairCases_on`p`    
+                   >> PairCases_on `p'`  
+		    >> simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def,TRANSFER_EXCLUDED_Auxiliary_thm])  
+		     >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def,TRANSFER_EXCLUDED_Auxiliary_thm])
+		     >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def,TRANSFER_EXCLUDED_Auxiliary_thm]);
+ 		     
 
 
 val _ = export_theory ();
