@@ -6,7 +6,7 @@ val _ = new_theory "AuxSpec";
 (* Sum a list of rational numbers *)
 val SUM_RAT_def = Define`
   SUM_RAT [] = (0:rat) /\
-  SUM_RAT (h::t) = h + SUM_RAT t`;
+  SUM_RAT (h::t) = (SND h) + SUM_RAT t`;
 (* -- *)
  
 (* The main datatypes *)
@@ -147,6 +147,39 @@ val update_cand_trans_val_def = Define `
     (update_cand_trans_val (qu:rat) (c:cand) (t:tallies) (p: ((cand list) # rat) list) =
         MAP (λr. r * (((get_cand_tally c t) - qu) / (get_cand_tally c t)))
           (MAP SND (p)))`; 
+
+val ACT_TransValue_def = Define `
+    ACT_TransValue (p: piles) (t: tallies) (qu: rat) (c: cand) <=>
+       let Sum_Parcel = SUM_RAT  (LAST (get_cand_pile c p))
+         in
+           let transValue = (((get_cand_tally c t) - qu) / Sum_Parcel)
+             in
+               case ((\r. r <= 0) Sum_Parcel) of
+                  T => 1
+                | _ => (case ((\r. 1 < r) Sum_Parcel) of
+                         T => 1
+                        |_ => Sum_Parcel) `;
+
+
+val update_cand_transVal_ACT_def = Define `
+    update_cand_transVal_ACT (qu:rat) (c:cand) (t:tallies) (p: piles) <=>
+        MAP (λr. r * (ACT_TransValue p t qu c))
+          (MAP SND (LAST (get_cand_pile c p)))`;
+
+
+val update_cand_pile_ACT = Define `
+          (update_cand_pile_ACT (qu: rat) t ([]: cand list) p1 p2 ⇔ T)
+       /\ (update_cand_pile_ACT qu t (l0::ls) p1 p2 ⇔
+            let Flat_pile2 = LAST (get_cand_pile l0 p2)
+              in
+               let Flat_pile1 = LAST (get_cand_pile l0 p1)
+                in
+                 (MAP FST Flat_pile2 = MAP FST (Flat_pile1))
+              /\ (MAP SND Flat_pile2 = update_cand_transVal_ACT qu l0 t p1) /\
+                 update_cand_pile_ACT qu t ls p1 p2)`;
+
+
+
 
 val _ = export_theory();
  
