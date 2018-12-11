@@ -1,5 +1,5 @@
 open preamble AuxSpecTheory
-
+ 
 val _ = new_theory "AuxBool";
 
 (* TODO: move to HOL *)
@@ -55,11 +55,11 @@ val subpile2_backlog_trans2_def = Define`
     subpile2_backlog_trans2 bl (ps:piles) p1 ⇔
       EVERY (λp. if MEM (FST p) bl then T else MEM p p1) ps`; 
 
-(* 
+ 
 val subpile_MEM_def = Define `
     (subpile_MEM c p1 (ps: piles)) <=>
       EVERY (λp. if (~ (c = (FST p))) then MEM p p1 else T) ps`;
-*)
+
 
 val first_continuing_cand_dec_def = Define `
   (first_continuing_cand_dec (c:cand) ([]: cand list)  (h: cand list) ⇔ F) /\
@@ -75,7 +75,7 @@ val COUNTAux_dec_def = Define `
        in
           if (MEM l0 h) then
                 (get_cand_pile l0 np = (get_cand_pile l0 p) ++[l']) /\
-                (get_cand_tally l0 t' = (get_cand_tally l0 t) + SUM_RAT (MAP SND l'))
+                (get_cand_tally l0 t' = (get_cand_tally l0 t) + SUM_RAT (l'))
            else
                 (get_cand_pile l0 np = get_cand_pile l0 p) /\
                 (get_cand_tally l0 t' = get_cand_tally l0 t)) /\
@@ -107,7 +107,16 @@ val piles_eq_list_def = Define `
           if ~ (MEM l0 l)
               then (get_cand_pile l0 p1 = get_cand_pile l0 p2) /\ (piles_eq_list ls l p1 p2)
           else (piles_eq_list ls l p1 p2))`; 
-      
+
+val All_NON_EMPTY_def = Define `
+    ALL_NON_EMPTY p ls <=>
+     EVERY (λl0. get_cand_pile l0 p <> []) ls `;
+
+val ALL_NON_ZERO_def = Define `
+    ALL_NON_ZERO p ls <=>
+     EVERY(λl0. SUM_RAT (LAST (get_cand_pile l0 p)) <> 0) ls`;
+
+
 val update_cand_pile = Define `
           (update_cand_pile (qu: rat) t ([]: cand list) p1 p2 ⇔ T)
        /\ (update_cand_pile qu t (l0::ls) p1 p2 ⇔
@@ -119,25 +128,24 @@ val update_cand_pile = Define `
               /\ (MAP SND Flat_pile2 = update_cand_trans_val qu l0 t Flat_pile1) /\
                  update_cand_pile qu t ls p1 p2)`;
 
-
+  
 val ACT_TransValue_def = Define `
-    ACT_TransValue (p: ((cand list) # rat) list) (t: tallies) (qu: rat) (c: cand) <=>
-       let Sum_Parcel = SUM_RAT (MAP SND p)
+    ACT_TransValue (p:piles) (t: tallies) (qu: rat) (c: cand) <=>
+       let Sum_Parcel = SUM_RAT (LAST (get_cand_pile c p))
          in
-           let transValue = (((get_cand_tally c t) - qu) / Sum_Parcel)
-             in
-               case ((\r. r <= 0) Sum_Parcel) of
-                  T => 1
-                | _ => (case ((\r. 1 < r) Sum_Parcel) of
-                         T => 1
-                        |_ => Sum_Parcel) `;
-
+	   let transValue = (((get_cand_tally c t) - qu) / Sum_Parcel)
+	     in
+	       case ((\r. r <= 0) Sum_Parcel) of
+	          T => 1
+	        | _ => (case ((\r. 1 < r) Sum_Parcel) of
+		         T => 1
+			|_ => Sum_Parcel) `; 
+  
 
 val update_cand_transVal_ACT_def = Define `
-    update_cand_transVal_ACT (qu:rat) (c:cand) (t:tallies) (p: ((cand list) # rat) list) <=>
+    update_cand_transVal_ACT (qu:rat) (c:cand) (t:tallies) (p: piles) <=>
         MAP (λr. r * (ACT_TransValue p t qu c))
-          (MAP SND p)`;
-
+          (MAP SND (LAST (get_cand_pile c p)))`; 
 
 val update_cand_pile_ACT = Define `
           (update_cand_pile_ACT (qu: rat) t ([]: cand list) p1 p2 ⇔ T)
@@ -147,10 +155,10 @@ val update_cand_pile_ACT = Define `
                let Flat_pile1 = LAST (get_cand_pile l0 p1)
                 in
                  (MAP FST Flat_pile2 = MAP FST (Flat_pile1))
-              /\ (MAP SND Flat_pile2 = update_cand_transVal_ACT qu l0 t Flat_pile1) /\
+              /\ (MAP SND Flat_pile2 = update_cand_transVal_ACT qu l0 t p1) /\
                  update_cand_pile_ACT qu t ls p1 p2)`;
 
 
-
+ 
 val _ = export_theory();
  
