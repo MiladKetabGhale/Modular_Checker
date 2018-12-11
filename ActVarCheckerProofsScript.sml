@@ -10,7 +10,7 @@ open preamble
      ActVarRulesProofsTheory
      ActVarCheckerSpecTheory
      ActVarCheckerBoolTheory
- 
+  
 val _ = new_theory "ActVarCheckerProofs";
 
 val Initial_Judgement_IMP_TheLogical = Q.store_thm ("Initial_Judgement_IMP_TheLogical",
@@ -34,7 +34,7 @@ val Logical_to_Functional_Initial_Judgement = Q.store_thm ("Logical_to_Functiona
       >> rw[Initial_Judgement_dec_def])
          >- FULL_SIMP_TAC list_ss [EVERY_MEM]
          >- FULL_SIMP_TAC list_ss [EVERY_MEM]);
- 
+  
 
 val No_Valid_Step_After_Final = Q.store_thm("No_Valid_Step_After_Final",
  `! qu st h l w. ~ (Valid_Step (qu,st,l) (Final w) h)`,
@@ -47,8 +47,8 @@ val No_Valid_Step_After_Final = Q.store_thm("No_Valid_Step_After_Final",
         >- rfs[TRANSFER_dec_def] 
         >- rfs[ELECT_dec_def] 
         >- rfs[ELIM_CAND_dec_def]
-	>- rfs[TRANSFER_EXCLUDED_dec_def]);  
-
+	>- rfs[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_Auxiliary_dec_def]);  
+ 
 
 val COUNT_thm = Q.store_thm("COUNT_thm",
   `COUNT_dec = COUNT`,
@@ -69,7 +69,7 @@ val ELIM_CAND_thm = Q.store_thm("ELIM_CAND_thm",
 val initial_judgement_thm = Q.store_thm("initial_judgement_thm",
   `Initial_Judgement_dec = initial_judgement`,
   rw[FUN_EQ_THM,Initial_Judgement_IMP_TheLogical,Logical_to_Functional_Initial_Judgement,EQ_IMP_THM]);
-   
+     
 val valid_judgements_thm = Q.store_thm("valid_judgements_thm",
   `valid_judgements_dec = valid_judgements`,
   rw[FUN_EQ_THM,valid_judgements_dec_LRC,valid_judgements_def,EQ_IMP_THM] \\ rw[]
