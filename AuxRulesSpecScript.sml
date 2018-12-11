@@ -18,32 +18,12 @@ val _ = new_theory "AuxRulesSpec";
 *)
 
 
-(* EWIN rule *)
-
-val EWIN_Auxiliary_def = Define `
-  EWIN_Auxiliary ((qu,st,l):params) j1 j2 =
-    ∃u t p bl e h bl2.
-      (j1 = NonFinal (u, t, p, bl, bl2, e, h))
-      /\ (j2 = Final e)
-      /\ (LENGTH e) = st`;
-
-(* HWIN rule *)
-
-val HWIN__Auxiliary_def = Define `
-  HWIN_Auxiliary ((qu,st,l):params) j1 j2 =
-    ∃u t p bl e h bl2.
-       (j1 = NonFinal (u, t, p, bl, bl2, e, h))
-       /\ (j2 = Final (e++h))
-       /\ (((LENGTH (e ++ h)) <= st) \/ ((LENGTH (e) <= st) /\ (h = [])))`;
-
-
 (* Auxiliary ELIMINATION rule *)
   
 val ELIM_CAND_Auxiliary_def = Define `
   ELIM_CAND_Auxiliary (c:cand) ((qu,st,l):params) (t: tallies) (p: piles) 
                       (np: piles) (bl2: cand list) bl2' (e: cand list) 
                       (h: cand list) nh <=>
-   
         (bl2 = [])
      /\ Valid_Init_CandList l
      /\ (!c'. MEM c' (h++e) ==> (MEM c' l))
@@ -70,8 +50,6 @@ val TRANSFER_Auxiliary_def = Define `
   TRANSFER_Auxiliary ((qu,st,l):params) (t: tallies)
                            (p: piles) (p': piles) (bl: cand list) (bl2: cand list) 
                            (e: cand list) (h: cand list) <=>
-(*    ? nba t p bl e h nbl np.
-     (j1 = NonFinal ([], t, p, bl, [], e, h)) *)
         (bl2 = []) 
      /\ (bl <> [])
      /\ (LENGTH e < st)
@@ -93,9 +71,6 @@ val TRANSFER_Auxiliary_def = Define `
 val COUNT_Auxiliary_def = Define `
         (COUNT_Auxiliary ((qu, st, l): params) (ba: ballots) (ba': ballots) (t: tallies)
                          (t': tallies) (p: piles) (p': piles) (e: cand list) (h: cand list)) <=> 
-
-(*? ba t nt p np bl bl2 e h.
-          (j1 = NonFinal (ba, t, p, bl, bl2, e, h)) *)
           (!d. MEM d (h++e) ==> MEM d l)
        /\ ALL_DISTINCT (h++e)
        /\ (Valid_PileTally t l)
@@ -115,9 +90,7 @@ val COUNT_Auxiliary_def = Define `
 
 val ELECT_Auxiliary_def = Define `
   ELECT_Auxiliary ((qu,st,l):params) (ba: ballots) (t: tallies)
-                   (p: piles) (p': piles) bl bl' (e: cand list) e' (h: cand list) h' <=>
- 
-    ? l1. 
+                   (p: piles) (p': piles) bl bl' (e: cand list) e' (h: cand list) h' l1 <=>
        (l1 <> [])
     /\ (SORTED (tally_comparison t) l1)
     /\ (!c. MEM c l1 ==> (!(r :rat). MEM (c,r) t ==> (qu <= r)))
@@ -144,7 +117,35 @@ val ELECT_Auxiliary_def = Define `
     /\ (!c. MEM c e' ==> MEM c l)
     /\ (!c. MEM c h ==> MEM c l)`;
 
-                      
+
+val TRANSFER_EXCLUDED_Auxiliary_def = Define `
+    TRANSFER_EXCLUDED_Auxiliary (qu,st,l) j1 j2 <=>
+      (? ba ba' t t' p p' bl bl' bl2 bl2' e e' h h' bs c.
+          (j1 = NonFinal (ba,t,p,bl,bl2,e,h))
+     /\ (ba = []) /\ (t = t') /\ (e = e') /\ (h = h') /\ (bl = bl')
+     /\ (bl2 = c :: bs)
+     /\ ((MEM (c, []) p' ==> (bl2' = []))
+     /\ (~ MEM (c, []) p' ==> (bl2' = bl2)))
+     /\ (LENGTH e < st)
+     /\ (!d. MEM d (h++e) ==> MEM d l)
+     /\ ALL_DISTINCT (h++e)
+     /\ (Valid_PileTally t l)
+     /\ (Valid_PileTally p l)
+     /\ ALL_DISTINCT (MAP FST p')
+     /\ (Valid_PileTally p' l)
+     /\ (Valid_Init_CandList l)
+     /\ ALL_DISTINCT (MAP FST t)
+     /\ (!c'. (MEM c' h ==> (?x. MEM (c',x) t /\ ( x < qu))))
+     /\ (!d'. ~ MEM d' [c] ==>
+        (!l'. (MEM (d',l') p ==> MEM (d',l') p')) /\ (!l'. (MEM (d',l') p' ==> MEM (d',l') p)))
+     /\ (? xs. xs = ReGroup_Piles (QSORT3 (\x y. (SND x) <= (SND y)) (FLAT (get_cand_pile c p)))
+        /\ (ba' = LAST xs)
+        /\ MEM (c, TAKE ((LENGTH xs) - 1) xs) p')
+     /\ (j2 = NonFinal (ba',t',p',bl',bl2',e',h')))`;
+
+
+
+(*                      
 val TRANSFER_EXCLUDED_Auxiliary_def = Define `
        TRANSFER_EXCLUDED_Auxiliary ((qu,st,l):params) ba' (t: tallies)
                            (p: piles) (p': piles) (bl2: cand list) bl2'
@@ -168,12 +169,11 @@ val TRANSFER_EXCLUDED_Auxiliary_def = Define `
      /\ ? xs. xs = ReGroup_Piles (QSORT3 (\x y. (SND x) <= (SND y)) (FLAT (get_cand_pile c p)))
         /\ (ba' = LAST xs)
 	/\ MEM (c, TAKE ((LENGTH xs) - 1) xs) p' `;
-        
    
 
 
 
-(*
+
 /\ (get_cand_pile c p' =
                        TAKE ((LENGTH (get_cand_pile c p)) - 1) (get_cand_pile c p))
      /\ ba' = LAST (ReGroup_Piles (FLAT (get_cand_pile c p)))`;
@@ -192,7 +192,7 @@ val MergeSort_def = tDefine "MergeSort" `
     /\ (MergeSort xs <=> let half = DIV2 (LENGTH xs) in
                            Merge (MergeSort (TAKE half xs)) (MergeSort (DROP half xs)))`
 WF_REL_TAC `measure (LENGTH)`                           
-  *)  
+ *)  
 
 
 val _ = export_theory ();
