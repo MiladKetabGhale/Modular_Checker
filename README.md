@@ -21,4 +21,10 @@ For example the STV used in (some) student unions in Australian universities suc
                         <some abbrev> ++ ProgScript.sml
 
 For example, the files ParserProgScript.sml contains translation of parser component into CakeML. 
+
+
+About Some Specific Files ::
+
+1. The file RulesProofsScript.sml consists of showing correspondence between the specification and boolean counting rules for all of our instances. This stands in a contrast with proofs in files named <STV_Name>RulesProofsScript.sml where each only deals with the same proofs for only the <STV_Name> rather than all STVs
+
      
