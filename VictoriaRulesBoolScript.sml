@@ -62,7 +62,7 @@ val ELECT_dec = Define `
      (ELECT_dec ((qu,st,l): params)
            (NonFinal (ba, t, p, bl, bl2, e, h))
            (NonFinal (ba', t', p', bl', bl2', e',h')) <=>
-		   (ELECT_Auxiliary_dec (qu,st,l) ba t p p' bl bl' e e' h h')
+		   (ELECT_Auxiliary_dec (qu,st,l) ba t p p' bl bl' e e' h h' (DROP (LENGTH bl) bl'))
                 /\ (bl2 = bl2') /\ (bl2 = [])
                 /\ (ba = []) /\ (ba' = [])
                 /\ (t = t')
@@ -70,7 +70,12 @@ val ELECT_dec = Define `
      (ELECT_dec _ (Final _) _ = F) /\
      (ELECT_dec _ _ (Final _) = F)`;
 
+val TRANSFER_EXCLUDED_dec_def = Define `
+    TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2  <=> TRANSFER_EXCLUDED_Auxiliary_dec (qu,st,l) j1 j2`;
+
+
  
+(*
 val TRANSFER_EXCLUDED_dec_def = Define `
     (TRANSFER_EXCLUDED_dec (qu,st,l) 
           (NonFinal (ba,t,p,bl,bl2,e,h))
@@ -79,5 +84,5 @@ val TRANSFER_EXCLUDED_dec_def = Define `
                 /\ (NULL ba) /\ (t = t') /\ (e = e') /\ (h = h') /\ (bl = bl')) /\
     (TRANSFER_EXCLUDED_dec _ (Final _) _ = F) /\ 
     (TRANSFER_EXCLUDED_dec _ _ (Final _) = F) `;
- 
+*) 
 val _ = export_theory ();

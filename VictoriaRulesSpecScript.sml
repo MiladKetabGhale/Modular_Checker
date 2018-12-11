@@ -86,7 +86,7 @@ val COUNT_def = Define `
                              ?(l': ((cand list) # rat) list).
                                (l' = FILTER (\ (b: (cand list) # rat). (first_continuing_cand c (FST b) h)) ba)
                             /\ (get_cand_pile c np = (get_cand_pile c p) ++ [l'])
-                            /\ (get_cand_tally c nt = (get_cand_tally c t) + (SUM_RAT (MAP SND l'))))
+                            /\ (get_cand_tally c nt = (get_cand_tally c t) + (SUM_RAT (l'))))
                             /\ (~ MEM c h ==>
                                            (get_cand_pile c np = get_cand_pile c p)
                                         /\ (get_cand_tally c nt = get_cand_tally c t))))
@@ -100,7 +100,7 @@ val ELECT_def = Define `
   ELECT ((qu,st,l):params) j1 j2 <=>
   (? ba nba t nt p np bl nbl bl2 nbl2 e ne h nh l1.
     (j1 = NonFinal (ba, t, p, bl, bl2, e, h))
-     /\ (ELECT_Auxiliary (qu,st,l) ba t p np bl nbl e ne h nh) 
+     /\ (ELECT_Auxiliary (qu,st,l) ba t p np bl nbl e ne h nh l1) 
      /\ (ba = []) /\ (nba = []) /\ (t = nt) /\ (bl2 = []) /\ (nbl2 = [])
      /\ (nbl =  bl ++ l1) 
      /\ (!c. MEM c l1 ==> (!l'. MEM (c,l') np ==>
@@ -113,8 +113,16 @@ val ELECT_def = Define `
      /\ (j2 = NonFinal (nba, nt, np, nbl, nbl2, ne, nh)))`;
 
 
+
+val TRANSFER_EXCLUDED_def = Define `
+    TRANSFER_EXCLUDED (qu,st,l) j1 j2 <=> TRANSFER_EXCLUDED_Auxiliary (qu,st,l) j1 j2`;
+
+
+
+
 (* TRANSFER votes of Excluded candidates *)
- 
+
+(* 
 val TRANSFER_EXCLUDED_def = Define `
     TRANSFER_EXCLUDED (qu,st,l) j1 j2 <=>
       (? ba nba t nt p np bl nbl bl2 nbl2 e ne h nh.
@@ -122,6 +130,6 @@ val TRANSFER_EXCLUDED_def = Define `
        /\ (TRANSFER_EXCLUDED_Auxiliary (qu,st,l) nba t p np bl2 nbl2 e h)
        /\ (ba = []) /\ (t = nt) /\ (e = ne) /\ (h = nh) /\ (bl = nbl)
        /\ (j2 = NonFinal (nba,nt,np,nbl,nbl2,ne,nh)))`;
-  
+*)  
  
 val _ = export_theory ();
