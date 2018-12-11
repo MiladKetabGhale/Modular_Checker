@@ -1,5 +1,5 @@
 open preamble AuxSpecTheory AuxBoolTheory ratTheory 
-          
+               
 val _ = new_theory "AuxEquivProofs";
 
 
@@ -152,7 +152,7 @@ val NoDupCand_BOTH_SIDES= Q.store_thm ("NoDupCand_BOTH_SIDES",
                >- (rfs[CONS_11]
                     >> first_assum (qspecl_then [`l2`,`c`,`t`,`h2`] strip_assume_tac)
                       >> rfs[])));
- 
+  
 val get_cand_tally_APPEND = Q.store_thm ("get_cand_tally_APPEND",
   `!(l1: (cand #rat) list) l2 c. (~ MEM c (MAP FST l1))
                                   ==> (get_cand_tally c (l1++l2) = get_cand_tally c l2) `,
@@ -263,7 +263,7 @@ val bigger_than_cand_LogicallyOK = Q.store_thm ("bigger_than_cand_LogicallyOK",
                            >> ASSUME_TAC bigger_than_cand_OK
                              >> first_assum (qspecl_then [`c`,`t0::t1`,`h'::h`] strip_assume_tac)
                                >> metis_tac []));
- 
+  
 val Logical_bigger_than_cand_IMP_TheFunctional = Q.store_thm ("Logical_bigger_than_cand_IMP_TheFunctional",
  `!h t c. (!d. (MEM d h)  ==> (?x (y: rat). (MEM (c,x) t)
                                                   /\ (MEM (d,y) t) /\ (x <= y)))
@@ -347,7 +347,7 @@ val EVERY_CAND_HAS_ONE_PILE = Q.store_thm ("EVERY_CAND_HAS_ONE_PILE",
                >> ASSUME_TAC get_cand_pile_APPEND
                >> first_assum (qspecl_then [`l1`,`(c,y)::l2`] strip_assume_tac)
                >>  fs [get_cand_pile_def,get_cand_pile_APPEND,ALOOKUP_def]));
- 
+  
 
 val Logical_subpile1_IMP_TheFunctional = Q.store_thm ("Logical_subpile1_IMP_TheFunctional",
  `! p1 p2 c. (!d'. ((d' <> c) ==> (!l. (MEM (d',l) p1 ==> MEM (d',l) p2)))
@@ -452,7 +452,7 @@ val Logical_list_MEM_VICE_VERCA_TheFunctional = Q.store_thm("Logical_list_MEM_VI
       >- (REPEAT STRIP_TAC >> fs[]
         >> metis_tac[MEM,list_MEM_dec_def]));
 
-
+ 
 val fcc_to_first_continuing_cand = Q.store_thm ("fcc_to_first_continuing_cand",
  `! c b h. first_continuing_cand_dec c b h ==> first_continuing_cand c b h`,
 
@@ -469,7 +469,7 @@ val fcc_to_first_continuing_cand = Q.store_thm ("fcc_to_first_continuing_cand",
             >> `?L1 L2. (b = L1 ++ [c]++L2) /\ (!d. MEM d L1 ==> ~ MEM d h')` by metis_tac[]
              >> MAP_EVERY qexists_tac [`h::L1`,`L2`]
               >> FULL_SIMP_TAC list_ss [MEM] >> metis_tac [MEM]))));
- 
+  
  
  val first_continuing_cand_IMP_fcc = Q.store_thm ("first_continuing_cand_IMP_fcc",
  `! c b h. first_continuing_cand c b h ==> first_continuing_cand_dec c b h`,
@@ -487,33 +487,7 @@ Induct_on `b`
         >- (FULL_SIMP_TAC list_ss [CONS_11]
           >> first_assum (qspecl_then [`c`,`h'`] strip_assume_tac)
             >> metis_tac [MEM]))));
-
-(*
-
-`! t nt p np ba h l.
-               (!c. MEM c l ==>
-                            ((MEM c h ==>
-                             ?(L: ((cand list) # rat) list).
-                               (L = FILTER (\ (b: (cand list) # rat). (first_continuing_cand c (FST b) h)) ba)
-                            /\ (!l'. MEM (c,l') np ==> (l' = (get_cand_pile c p) ++ [L]))
-                            /\ (!r. MEM (c,r) nt ==> (r = (get_cand_tally c t) + SUM_RAT (MAP SND L))))
-                            /\ (~ MEM c h ==>
-                                           (!l'. MEM c l /\ MEM (c,l') np <=> MEM c l /\ MEM (c,l') p)
-                                        /\ (!r. MEM c l /\ MEM (c,r) t <=> MEM c l /\ MEM (c,r) nt))))
-                    ==>
-              (!c. MEM c l ==>
-                       ((MEM c h ==>
-                   (get_cand_pile c np = (get_cand_pile c p)
-                     ++ [(FILTER (\ (b: (cand list) # rat). (first_continuing_cand c (FST b) h)) ba)])
-                /\ (get_cand_tally c nt = (get_cand_tally c t) + (SUM_RAT (MAP SND
-                   (FILTER (\ (b: (cand list) # rat). (first_continuing_cand c (FST b) h)) ba))))))
-                            /\ (~ MEM c h ==>
-                                           (get_cand_pile c np = get_cand_pile c p)
-                                        /\ (get_cand_tally c nt = get_cand_tally c t)))`
-
-rw[]
-  *)   
-
+ 
 
 val Logical_to_Functional_Count_Dec_Aux = Q.store_thm ("Logical_to_Functional_Count_Dec_Aux",
  `!t nt p np ba h l.
@@ -521,7 +495,7 @@ val Logical_to_Functional_Count_Dec_Aux = Q.store_thm ("Logical_to_Functional_Co
                ((MEM c h ==>
                    (get_cand_pile c np = (get_cand_pile c p)
                      ++ [(FILTER (\ (b: (cand list) # rat). (first_continuing_cand c (FST b) h)) ba)])
-                /\ (get_cand_tally c nt = (get_cand_tally c t) + (SUM_RAT (MAP SND
+                /\ (get_cand_tally c nt = (get_cand_tally c t) + (SUM_RAT (
                    (FILTER (\ (b: (cand list) # rat). (first_continuing_cand c (FST b) h)) ba))))))
                             /\ (~ MEM c h ==>
                                            (get_cand_pile c np = get_cand_pile c p)
@@ -543,7 +517,8 @@ Induct_on `l`
        >> `!c h ba. first_continuing_cand c h ba <=> first_continuing_cand_dec c h ba`
               by metis_tac [first_continuing_cand_IMP_fcc,fcc_to_first_continuing_cand]
          >> metis_tac [])));
-    
+ 
+
 val Functional_to_Logical_Count_Dec_Aux = Q.store_thm ("Functional_to_Logical_Count_Dec_Aux",
 `!t t' p np ba h l. COUNTAux_dec p np t t' ba h l ==>
           (!c. MEM c l ==>
@@ -551,7 +526,7 @@ val Functional_to_Logical_Count_Dec_Aux = Q.store_thm ("Functional_to_Logical_Co
                     ?(l': ((cand list) # rat) list).
                       (l' = FILTER (\ (b: (cand list) # rat). (first_continuing_cand c (FST b) h)) ba)
                          /\ (get_cand_pile c np = (get_cand_pile c p) ++ [l'])
-                         /\ (get_cand_tally c t' = (get_cand_tally c t) + (SUM_RAT (MAP SND l'))))
+                         /\ (get_cand_tally c t' = (get_cand_tally c t) + (SUM_RAT ( l'))))
                          /\ (~ MEM c h ==>
                                       (get_cand_pile c np = get_cand_pile c p)
                                       /\ (get_cand_tally c t' = get_cand_tally c t))))`,
@@ -582,7 +557,7 @@ Induct_on `l`
        >- (`(c = h) \/ MEM c l` by FULL_SIMP_TAC list_ss [MEM]
          >- metis_tac[COUNTAux_dec_def]
          >- metis_tac[COUNTAux_dec_def])));
- 
+  
 
 val APPEND_EQ_NIL2 = Q.store_thm ("APPEND_EQ_NIL2",
     `!l1 l2. ([] = l1 ++ l2) ==> ((l1 = []) /\ (l2 = [])) `,
@@ -873,14 +848,54 @@ Induct_on`np`
               >> fs[]))
       >- (first_assum(qspecl_then [`bl`,`p`] strip_assume_tac)
         >> rfs[subpile2_backlog_trans2_def])));
+  
+ 
+val Functional_AllNonZero_to_Logical = Q.store_thm("Functional_AllNonZero_to_Logical",
+ `! l p. ALL_NON_ZERO p l ==> (!c. MEM c l ==> SUM_RAT (LAST (get_cand_pile c p)) <> 0)`,
 
+Induct
+  >- rw[]
+  >- (rw[]
+      >- rfs[ALL_NON_ZERO_def,MEM]
+      >- rfs[ALL_NON_ZERO_def,MEM]));
+ 
 
+val Logical_AllNonZero_to_Functional = Q.store_thm("Logical_AllNonZero_to_Functional",
+ `!l p . (!c. MEM c l ==> SUM_RAT (LAST (get_cand_pile c p)) <> 0) ==> ALL_NON_ZERO p l`,
+
+Induct
+   >- rw[ALL_NON_ZERO_def]
+   >- rfs[ALL_NON_ZERO_def,MEM]);
+ 
+val Logical_AllNonEpty_to_Functional = Q.store_thm("Logical_AllNonEpty_to_Functional",
+ `! l p. (ALL_DISTINCT (MAP FST p)) /\ (!c. MEM c l ==> MEM c (MAP FST p)) ==>
+         (!c. MEM c l ==> (!l'. MEM (c,l') p ==> l' <> [])) ==> ALL_NON_EMPTY p l`,
+
+Induct_on`l`
+   >- rw[ALL_NON_EMPTY_def] 
+   >- (rw[ALL_NON_EMPTY_def]
+       >- metis_tac[GET_CAND_PILE_MEM,MEM,ALL_NON_EMPTY_def]
+       >- metis_tac[ALL_NON_EMPTY_def,MEM]));
+ 
+
+val Functional_AllNonEmpty_to_Logical = Q.store_thm("Functional_AllNonEmpty_to_Logical",
+ `!l p. (ALL_DISTINCT (MAP FST p)) /\ (!c. MEM c l ==> MEM c (MAP FST p)) ==>
+         (ALL_NON_EMPTY p l) ==> (!c. MEM c l ==> (!l'. MEM (c,l') p ==> l' <> []))`,
+
+Induct_on `l`
+    >- rw[]
+    >- (rw[]
+     >- (rfs[ALL_NON_EMPTY_def]
+         >> metis_tac[ALL_NON_EMPTY_def,EVERY_CAND_HAS_ONE_PILE,MEM])
+     >- rfs[ALL_NON_EMPTY_def]));
+ 
+ 
 val functional_to_logical_update_pile_ACT = Q.store_thm ("functional_to_logical_update_pile_ACT",
  `! (qu: rat) (t: (cand # rat) list) l p1 p2. (ALL_DISTINCT (MAP FST p1)) /\ (ALL_DISTINCT (MAP FST p2))
         /\   (update_cand_pile_ACT qu t l p1 p2) ==>
               (!c. MEM c l ==> (!l'. MEM (c,l') p2 ==>
                                          (MAP FST (LAST l') = MAP FST (LAST (get_cand_pile c p1)))
-                                      /\ (MAP SND (LAST l') = update_cand_transVal_ACT qu c t (LAST (get_cand_pile c p1)))))`,
+                                      /\ (MAP SND (LAST l') = update_cand_transVal_ACT qu c t p1)))`,
 
    Induct_on `l`
      >- rw[]
@@ -905,7 +920,7 @@ val logical_to_functional_update_pile_ACT = Q.store_thm ("logical_to_functional_
  `! (qu: rat) (t: (cand #rat) list) l p1 p2. (!c. MEM c l ==> MEM c (MAP FST p2)) /\
                                             (!c. MEM c l ==> (!l'. MEM (c,l') p2 ==>
                                               (MAP FST (LAST l') = MAP FST (LAST (get_cand_pile c p1)))
-                                                /\ (MAP SND (LAST l') = update_cand_transVal_ACT qu c t (LAST (get_cand_pile c p1))))) ==>
+                                                /\ (MAP SND (LAST l') = update_cand_transVal_ACT qu c t p1))) ==>
                                                     (update_cand_pile_ACT qu t l p1 p2)`,
 
     Induct_on `l`
@@ -916,8 +931,6 @@ val logical_to_functional_update_pile_ACT = Q.store_thm ("logical_to_functional_
             >> metis_tac [MEM])
           >- (`MEM (h,get_cand_pile h p2) p2` by metis_tac [MEM,GET_CAND_PILE_MEM]
             >> metis_tac [MEM])));
-
-
-
+ 
 
 val _ = export_theory();
