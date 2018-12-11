@@ -3,7 +3,7 @@ open preamble
      AuxRulesSpecTheory
      AuxRulesBoolTheory
      AuxRulesEquivProofsTheory
-   
+    
 val _ = new_theory "UnionRulesSpec";
 
 (* The rules *)
@@ -86,7 +86,7 @@ val COUNT_def = Define `
                              ?(l': ((cand list) # rat) list).
                                (l' = FILTER (\ (b: (cand list) # rat). (first_continuing_cand c (FST b) h)) ba)
                             /\ (get_cand_pile c np = (get_cand_pile c p) ++ [l'])
-                            /\ (get_cand_tally c nt = (get_cand_tally c t) + (SUM_RAT (MAP SND l'))))
+                            /\ (get_cand_tally c nt = (get_cand_tally c t) + (SUM_RAT (l'))))
                             /\ (~ MEM c h ==>
                                            (get_cand_pile c np = get_cand_pile c p)
                                         /\ (get_cand_tally c nt = get_cand_tally c t))))
@@ -112,7 +112,7 @@ val ELECT_def = Define `
   ELECT ((qu,st,l):params) j1 j2 <=>
   (? ba nba t nt p np bl nbl bl2 nbl2 e ne h nh l1.
     (j1 = NonFinal (ba, t, p, bl, bl2, e, h))
-     /\ (ELECT_Auxiliary (qu,st,l) ba t p np bl nbl e ne h nh) 
+     /\ (ELECT_Auxiliary (qu,st,l) ba t p np bl nbl e ne h nh l1) 
      /\ (ba = []) /\ (nba = []) /\ (t = nt) /\ (bl2 = []) /\ (nbl2 = [])
      /\ (nbl =  bl ++ l1) 
      /\ (!c. MEM c l1 ==> (!l'. MEM (c,l') np ==>
@@ -127,13 +127,35 @@ val ELECT_def = Define `
 (* TRANSFER votes of Excluded candidates *)
 
 val TRANSFER_EXCLUDED_def = Define `
+    TRANSFER_EXCLUDED (qu,st,l) j1 j2 <=> TRANSFER_EXCLUDED_Auxiliary (qu,st,l) j1 j2`;
+
+(* 
+val TRANSFER_EXCLUDED_def = Define `
     TRANSFER_EXCLUDED (qu,st,l) j1 j2 <=>
       (? ba nba t nt p np bl nbl bl2 nbl2 e ne h nh.
           (j1 = NonFinal (ba,t,p,bl,bl2,e,h))
-       /\ (TRANSFER_EXCLUDED_Auxiliary (qu,st,l) nba t p np bl2 nbl2 e h)
-       /\ (ba = []) /\ (t = nt) /\ (e = ne) /\ (h = nh) /\ (bl = nbl)
-       /\ (j2 = NonFinal (nba,nt,np,nbl,nbl2,ne,nh))) /\ F`;
-
-
-
+     /\ ? bs c.
+        (bl2 = c :: bs)
+     /\ ((MEM (c, []) p' ==> (bl2' = []))
+     /\ (~ MEM (c, []) p' ==> (bl2' = bl2)))
+     /\ (LENGTH e < st)
+     /\ (!d. MEM d (h++e) ==> MEM d l)
+     /\ ALL_DISTINCT (h++e)
+     /\ (Valid_PileTally t l)
+     /\ (Valid_PileTally p l)
+     /\ ALL_DISTINCT (MAP FST p')
+     /\ (Valid_PileTally p' l)
+     /\ (Valid_Init_CandList l)
+     /\ ALL_DISTINCT (MAP FST t)
+     /\ (!c'. (MEM c' h ==> (?x. MEM (c',x) t /\ ( x < qu))))
+     /\ (!d'. ~ MEM d' [c] ==>
+        (!l'. (MEM (d',l') p ==> MEM (d',l') p')) /\ (!l'. (MEM (d',l') p' ==> MEM (d',l') p)))
+     /\ ? xs. xs = ReGroup_Piles (QSORT3 (\x y. (SND x) <= (SND y)) (FLAT (get_cand_pile c p)))
+        /\ (ba' = LAST xs)
+        /\ MEM (c, TAKE ((LENGTH xs) - 1) xs) p' `;
+     /\ (ba = []) /\ (t = nt) /\ (e = ne) /\ (h = nh) /\ (bl = nbl)
+     /\ (j2 = NonFinal (nba,nt,np,nbl,nbl2,ne,nh)))`;
+*)  
+(* /\ (TRANSFER_EXCLUDED_Auxiliary (qu,st,l) nba t p np bl2 nbl2 e h) *)
+ 
 val _ = export_theory ();
