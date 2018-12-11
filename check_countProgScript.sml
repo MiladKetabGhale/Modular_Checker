@@ -1,6 +1,12 @@
-open preamble basis CheckerTheory ParserProgTheory
-
+open preamble basis AuxBoolTheory UnionCheckerSpecTheory UnionCheckerBoolTheory UnionCheckerProofsTheory ParserProgTheory
+      
 val _ = new_theory"check_countProg";
+
+(*
+val _ = translation_extends"AuxTransProg";
+
+val _ = translation_extends"UnionTranslationProg";
+*)
 
 val _ = translation_extends"ParserProg";
 
