@@ -47,7 +47,7 @@ val No_Valid_Step_After_Final = Q.store_thm("No_Valid_Step_After_Final",
         >- rfs[TRANSFER_dec_def] 
         >- rfs[ELECT_dec_def] 
         >- rfs[ELIM_CAND_dec_def]
-	>- rfs[TRANSFER_EXCLUDED_dec_def]);  
+	>- rfs[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_Auxiliary_dec_def]);  
 
 
 val COUNT_thm = Q.store_thm("COUNT_thm",
