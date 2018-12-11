@@ -1,11 +1,14 @@
-open preamble basis AuxTransProgTheory  myparserTheory
+open preamble basis  UnionTransProgTheory myparserTheory
+
+(* I am optionally calling the Union STV in for parsing. One should be able to choose another STV *)
 
 val _ = new_theory"ParserProg";
 
-val _ = translation_extends"AuxTransProg";
+(* val _ = translation_extends"AuxTransProg";*)
 
-(*val _ = translation_extends"UnionTranslationProg";
-*)
+val _ = translation_extends"UnionTransProg";
+
+
 val r = translate OPTION_BIND_def;
 val r = translate OPT_MMAP_def;
 val r = translate parse_number_def;
