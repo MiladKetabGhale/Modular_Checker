@@ -105,15 +105,14 @@ val Functional_to_Logical_elect = Q.store_thm("Functional_to_Logical_elect",
 val Logical_to_Functional_elect = Q.store_thm ("Logical_to_Functional_elect",
  `! st qu l j1 j2. ELECT (qu,st,l) j1 j2 ==> ELECT_dec (qu,st,l) j1 j2`,
 
- REPEAT STRIP_TAC
+REPEAT STRIP_TAC
   >> fs[ELECT_def,ELECT_dec_def]
-  >> fs[Logical_ElectAux_to_Functional]
-  >> fs[Logical_ElectAux_to_Functional]
   >> `DROP (LENGTH bl) (bl ++ l1) = l1` by metis_tac[DROP_LENGTH]
-  >> rw[]
+  >> fs[Logical_ElectAux_to_Functional]
   >> rfs[ELECT_Auxiliary_def]
   >> `!c. MEM c l1 ==> MEM c (MAP FST np)` by metis_tac [ELECT_Auxiliary_def,MEM,Valid_PileTally_def]
-  >> metis_tac[logical_to_functional_update_pile])
+  >> metis_tac[logical_to_functional_update_pile]);
+
 
 
 val Functional_Count_to_Logical = Q.store_thm("Functional_Count_to_Logical",
@@ -139,33 +138,25 @@ val Logical_Count_to_Functional = Q.store_thm("Logical_Count_to_Functional",
 
 
 
-val Logical_TransferExcluded_to_Functional = Q.store_thm("Logical_TransferExcluded_to_Functional",
- `!qu st l j1 j2. TRANSFER_EXCLUDED (qu,st,l) j1 j2 ==> TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2`,
-
-   fs[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def]);
-
-
-val Functional_TransferExcluded_to_Logical = Q.store_thm("Functional_TransferExcluded_to_Logical",
- `!qu st l j1 j2. TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2 ==> TRANSFER_EXCLUDED_dec (qu,st,l) j1 j2`,
-
-    rw[]);
+val TRANSFER_EXCLUDED_Auxiliary_thm = Q.store_thm("TRANSFER_EXCLUDED_Auxiliary_thm",
+ `TRANSFER_EXCLUDED_Auxiliary_dec = TRANSFER_EXCLUDED_Auxiliary`,
+   simp[FUN_EQ_THM,Logical_TransferExcludedAux_to_Functional,Functional_TransferExcluded_Aux_to_Logical,
+        FORALL_PROD,EQ_IMP_THM]);
 
 
 val TRANSFER_EXCLUDED_thm = Q.store_thm("TRANSFER_EXCLUDED_thm",
    `TRANSFER_EXCLUDED_dec = TRANSFER_EXCLUDED`,
 
         (simp[FUN_EQ_THM]
-         >> qx_gen_tac`params`
+          >> qx_gen_tac`params`
           >> PairCases_on`params`
            >>  Cases)
-             >-( Cases
+             >-(Cases
                >- (PairCases_on`p`
                    >> PairCases_on `p'`
-                    >> simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def])
-               >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def])         
-             >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def]);
-
-
+                    >> simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def,TRANSFER_EXCLUDED_Auxiliary_thm])
+                     >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def,TRANSFER_EXCLUDED_Auxiliary_thm])
+                     >- simp[TRANSFER_EXCLUDED_dec_def,TRANSFER_EXCLUDED_def,TRANSFER_EXCLUDED_Auxiliary_thm]);
 
 
 val _ = export_theory ();
