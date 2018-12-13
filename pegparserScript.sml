@@ -53,7 +53,8 @@ val dsToNumExp_def = Define‘
   (dsToNumExp [] = Rat 0 1) ∧
   (dsToNumExp (f::fs) =
    case dsToNumExp fs of
-       Rat n exp => Rat (NTF_to_num f * exp + n) (exp * 10))
+       Rat n exp => Rat (NTF_to_num f * exp + n) (exp * 10)
+     | _ => Error)
 ’;
 
 val pickleft_def = Define‘
@@ -107,7 +108,9 @@ val CONS_NumRat_def = Define‘
 ’;
 
 val mkBallot_def = Define‘
-  (mkBallot cf (Rat n d) = Ballot (destCand cf, rat_of_num n / rat_of_num d)) ∧
+  (mkBallot cf (Rat n d) =
+     if d = 0 then Error
+     else Ballot (destCand cf, rat_of_num n / rat_of_num d)) ∧
   (mkBallot _ _ = Error)
 ’;
 
@@ -141,7 +144,8 @@ val mkJudgement_def = Define‘
   mkJudgement (Forms [bl1_f; bl2_f; ps_f; cs1_f; cs2_f; cs3_f; cs4_f]) =
       Judgement (destBallotL bl1_f, destBallotL bl2_f, destPileList ps_f,
                  destCandl cs1_f, destCandl cs2_f,
-                 destCandl cs3_f, destCandl cs4_f)
+                 destCandl cs3_f, destCandl cs4_f) ∧
+  mkJudgement _ = Error
 ’;
 
 val jPEG_def = zDefine ‘
