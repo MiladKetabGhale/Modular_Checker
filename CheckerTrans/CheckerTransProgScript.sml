@@ -1,17 +1,20 @@
 open preamble basis 
      AuxSpecTheory 
-     AuxBoolTheory
+     AuxIMPTheory
      AuxEquivProofsTheory
      RulesIMPTheory 
-     AuxRulesBoolTheory
+     AuxRulesIMPTheory
      AuxRulesEquivProofsTheory
+     RulesTransProgTheory
      CheckerIMPTheory
    
 val _ = new_theory"CheckerTransProg";
 
+val _ = translation_extends"RulesTransProg";
+
 (* val _ = translation_extends"RulesTransProg"; *)
  
-
+(*
 val _ = translation_extends"basisProg";
  
 
@@ -105,7 +108,7 @@ val elect_dec_side = Q.prove(
     >> imp_res_tac ratTheory.RAT_LES_LEQ_TRANS
     >> fs[]) |> update_precondition;
  
-
+*)
 
 val r = translate Initial_Judgement_dec_def;
   
