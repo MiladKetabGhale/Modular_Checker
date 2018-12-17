@@ -1,4 +1,5 @@
-INCLUDES = $(CAKEMLDIR)/basis $(CAKEMLDIR)/translator $(CAKEMLDIR)/misc
+INCLUDES = $(CAKEMLDIR)/basis $(CAKEMLDIR)/translator $(CAKEMLDIR)/misc \
+           $(HOLDIR)/examples/formal-languages/context-free
 OPTIONS = QUIT_ON_FAILURE
 
 THYFILES = $(patsubst %Script.sml,%Theory.uo,$(wildcard *.sml))
