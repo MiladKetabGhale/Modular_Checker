@@ -1,6 +1,6 @@
 open preamble AuxSpecTheory
  
-val _ = new_theory "AuxBool";
+val _ = new_theory "AuxIMP";
 
 (* TODO: move to HOL *)
 val LRC_APPEND = Q.store_thm("LRC_APPEND",

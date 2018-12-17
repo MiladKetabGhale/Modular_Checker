@@ -1,4 +1,4 @@
-open preamble AuxSpecTheory AuxBoolTheory ratTheory 
+open preamble AuxSpecTheory AuxIMPTheory ratTheory 
                
 val _ = new_theory "AuxEquivProofs";
 

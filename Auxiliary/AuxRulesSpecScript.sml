@@ -1,4 +1,4 @@
-open preamble AuxSpecTheory AuxBoolTheory
+open preamble AuxSpecTheory AuxIMPTheory
        
 val _ = new_theory "AuxRulesSpec";
 

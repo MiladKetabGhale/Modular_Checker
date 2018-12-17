@@ -1,6 +1,6 @@
-open preamble AuxSpecTheory AuxBoolTheory
+open preamble AuxSpecTheory AuxIMPTheory
      
-val _ = new_theory "AuxRulesBool";
+val _ = new_theory "AuxRulesIMP";
 
  
 val ELIM_CAND_Auxiliary_dec_def = Define `
