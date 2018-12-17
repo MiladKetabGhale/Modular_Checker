@@ -1,9 +1,9 @@
 open preamble
      AuxSpecTheory
-     AuxBoolTheory
+     AuxIMPTheory
      AuxEquivProofsTheory
      AuxRulesSpecTheory
-     AuxRulesBoolTheory
+     AuxRulesIMPTheory
      AuxRulesEquivProofsTheory
      RulesIMPTheory
 
