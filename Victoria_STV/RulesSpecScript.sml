@@ -1,10 +1,10 @@
 open preamble 
      AuxSpecTheory 
      AuxRulesSpecTheory
-     AuxRulesBoolTheory
+     AuxRulesIMPTheory
      AuxRulesEquivProofsTheory
     
-val _ = new_theory "VictoriaRulesSpec";
+val _ = new_theory "RulesSpec";
 
 (* The rules *)
 

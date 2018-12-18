@@ -1,6 +1,6 @@
-open preamble AuxSpecTheory AuxBoolTheory AuxRulesSpecTheory AuxRulesBoolTheory
+open preamble AuxSpecTheory AuxIMPTheory AuxRulesSpecTheory AuxRulesIMPTheory
   
-val _ = new_theory "VictoriaRulesBool";
+val _ = new_theory "RulesIMP";
 
 
 val EWIN_dec_def = Define `
