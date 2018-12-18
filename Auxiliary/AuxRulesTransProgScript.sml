@@ -22,6 +22,7 @@ val r = translate less_than_quota_def;
 val r = translate equal_except_dec_def;
 val r = translate bigger_than_cand_def;
 val r = translate get_cand_pile_def;
+val r = translate get_cand_pile_list_def;
   
 val () = use_mem_intro := true;
 
