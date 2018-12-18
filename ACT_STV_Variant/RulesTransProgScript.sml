@@ -1,15 +1,15 @@
 open preamble  basis
      AuxSpecTheory
-     AuxBoolTheory
-     AuxRulesBoolTheory
+     AuxIMPTheory
+     AuxRulesIMPTheory
      AuxEquivProofsTheory
-     AuxRulesBoolTheory
-     AuxTransProgTheory
-     ActVarRulesBoolTheory ActVarCheckerBoolTheory
+     AuxRulesIMPTheory
+     AuxRulesTransProgTheory
+     RulesIMPTheory 
   
 val _ = new_theory"RulesTransProg";
 
-val _ = translation_extends"AuxTransProg";
+val _ = translation_extends"AuxRulesTransProg";
    
 val r = translate HWIN_dec_def;
 
@@ -27,7 +27,14 @@ val r = translate TRANSFER_EXCLUDED_dec_def;
 
 val () = use_mem_intro := false;
 
-val r = translate ELECT_dec_def;
+
+val r = translate update_cand_trans_val_def;
+val r = translate update_cand_pile_def;
+
+
+val update_cand_trans_val_side_def = fetch"-""update_cand_trans_val_side_def";
+val update_cand_pile_side_def = fetch"-""update_cand_pile_side_def";
+
 
 val update_cand_pile_side = Q.prove(
   `∀c a b d e.
@@ -36,6 +43,9 @@ val update_cand_pile_side = Q.prove(
   Induct
   \\ rw[Once update_cand_pile_side_def,update_cand_trans_val_side_def]) |> update_precondition;
  
+
+val r = translate ELECT_dec_def;
+
 
 val elect_dec_side_def = fetch"-""elect_dec_side_def";
  
@@ -52,10 +62,5 @@ val elect_dec_side = Q.prove(
     >> imp_res_tac ratTheory.RAT_LES_LEQ_TRANS
     >> fs[]) |> update_precondition;
 
-
-
-val r = translate Initial_Judgement_dec_def;
- 
-val r = translate Valid_Step_def;
 
 val _ = export_theory();
