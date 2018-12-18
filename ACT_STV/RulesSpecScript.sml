@@ -59,6 +59,34 @@ val ELIM_CAND_def = Define `
 (* TRANSFER rule *)
 
 val TRANSFER_def = Define `
+  TRANSFER ((qu,st,l):params) j1 j2 =
+    ? nba t p bl e h nbl np.
+     (j1 = NonFinal ([], t, p, bl, [], e, h))
+     /\ (LENGTH e < st)
+     /\ (!d. MEM d (h++e) ==> MEM d l)
+     /\ ALL_DISTINCT (h++e)
+     /\ (Valid_PileTally t l)
+     /\ (Valid_PileTally p l)
+     /\ (Valid_PileTally np l)
+     /\ (Valid_Init_CandList l)
+     /\ ALL_DISTINCT (MAP FST t)
+     /\ (!d. MEM d bl ==> MEM d l)
+     /\ (!c'. (MEM c' h ==> (?x. MEM (c',x) t /\ ( x < qu))))
+     /\ (ALL_DISTINCT (MAP FST p))
+     /\ ? l' c.
+              ((bl = c::l')
+           /\ (MEM c l)
+           /\ (!l''. MEM (c,l'') p ==> l'' <> [])
+           /\ (nbl = l')
+           /\ (nba = LAST (get_cand_pile c p))
+           /\ (MEM (c,[]) np)
+           /\ (!d'. ((d' <> c) ==> (!l'. (MEM (d',l') p ==> MEM (d',l') np)
+                            /\ (MEM (d',l') np ==> MEM (d',l') p)))))
+           /\ (j2 = NonFinal (nba, t, np, nbl, [], e, h))`;
+
+
+(*
+val TRANSFER_def = Define `
   TRANSFER ((qu,st,l):params) j1 j2 <=>
     ? ba nba t p np bl nbl bl2 nbl2 e h.
      (j1 = NonFinal (ba, t, p, bl, bl2, e, h))
@@ -75,6 +103,7 @@ val TRANSFER_def = Define `
            /\ (!d'. ((d' <> c) ==> (!l'. (MEM (d',l') p ==> MEM (d',l') np)
                             /\ (MEM (d',l') np ==> MEM (d',l') p)))))
            /\ (j2 = NonFinal (nba, t, np, nbl, nbl2, e, h))`;
+*)
 
 (* COUNT rule *)
 

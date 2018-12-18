@@ -33,6 +33,37 @@ val TRANSFER_dec_def = Define `
   (TRANSFER_dec ((qu,st,l):params)
     (NonFinal (ba, t, p, bl, bl2, e, h))
     (NonFinal (ba', t', p', bl', bl2', e',h')) ⇔
+       (NULL bl2) /\ (NULL bl2') /\ (NULL ba) /\ (e = e') /\ (h = h') /\ (t = t')
+   /\ (LENGTH e < st)
+   /\ (list_MEM_dec (h++e) l)
+   /\ ALL_DISTINCT (h++e)
+   /\ (Valid_PileTally_dec1 t l) /\ (Valid_PileTally_dec2 t l)
+   /\ (Valid_PileTally_dec1 p l) /\ (Valid_PileTally_dec2 p l)
+   /\ (Valid_PileTally_dec1 p' l) /\ (Valid_PileTally_dec2 p' l)
+   /\ (¬(NULL l)) /\ (ALL_DISTINCT l)
+   /\ (ALL_DISTINCT (MAP FST t))
+   /\ (less_than_quota qu t h)
+   /\ (ALL_DISTINCT (MAP FST p))
+   /\ (case bl of [] => F | hbl::tbl =>
+         let gcp = get_cand_pile hbl p
+           in
+              (~ NULL gcp)
+           /\ (MEM hbl l)
+           /\ (bl' = tbl)
+           /\ (ba' = LAST gcp)
+           /\ (MEM (hbl,[]) p')
+           /\ (subpile1 hbl p p') /\ (subpile2 hbl p' p))) ∧
+  (TRANSFER_dec _ (Final _) _ = F) /\
+  (TRANSFER_dec _ _ (Final _) = F)`;
+
+
+
+
+(*
+val TRANSFER_dec_def = Define `
+  (TRANSFER_dec ((qu,st,l):params)
+    (NonFinal (ba, t, p, bl, bl2, e, h))
+    (NonFinal (ba', t', p', bl', bl2', e',h')) ⇔
          (TRANSFER_Auxiliary_dec (qu,st,l) t p p' bl bl2 e h)
       /\ (list_MEM_dec bl l)
       /\ (ALL_NON_EMPTY p bl)
@@ -46,7 +77,7 @@ val TRANSFER_dec_def = Define `
            /\ (subpile1 hbl p p') /\ (subpile2 hbl p' p))) ∧
   (TRANSFER_dec _ (Final _) _ = F) /\
   (TRANSFER_dec _ _ (Final _) = F)`;
-
+*)
 
 val COUNT_dec_def = Define `
    (COUNT_dec ((qu, st, l): params)
