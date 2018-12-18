@@ -1,15 +1,15 @@
 open preamble  basis
      AuxSpecTheory
-     AuxBoolTheory
+     AuxIMPTheory
      AuxEquivProofsTheory
-     AuxRulesBoolTheory
-     AuxTransProgTheory
-     ActRulesBoolTheory ActCheckerBoolTheory 
+     AuxRulesIMPTheory
+     AuxRulesTransProgTheory
+     RulesIMPTheory  
     
   
 val _ = new_theory "RulesTransProg";
 
-val _ = translation_extends"AuxTransProg";
+val _ = translation_extends"AuxRulesTransProg";
    
  
 val () = use_mem_intro := true;
@@ -27,6 +27,9 @@ val () = use_mem_intro := false;
 val r = translate HWIN_dec_def;
 val r = translate EWIN_dec_def;
  
+val r = translate ACT_TransValue_def;
+val r = translate update_cand_transVal_ACT_def;
+val r = translate update_cand_pile_ACT_def;
 
 val r = translate ELECT_dec_def;
  
@@ -37,12 +40,13 @@ val transfer_dec_side = Q.prove(
   rw[definition"transfer_dec_side_def"]
   >> fs[ALL_NON_EMPTY_def,MEM]) |> update_precondition;
   
-(*
+
 val act_transvalue_side_def = fetch"-""act_transvalue_side_def";
+
 val update_cand_transval_act_side_def = fetch"-""update_cand_transval_act_side_def";
 val update_cand_pile_act_side_def = fetch"-""update_cand_pile_act_side_def";
 val elect_dec_side_def = fetch"-""elect_dec_side_def";  
-*)   
+   
   
 val act_transvalue_side = Q.prove(
  `! v4 v6 v5 v3. (get_cand_pile v3 v4 <> [])
@@ -115,9 +119,7 @@ val elect_dec_side = Q.prove(
   \\ fs[]) |> update_precondition;
 *)
 
-val r = translate Initial_Judgement_dec_def;
 
-val r = translate Valid_Step_def;
 
 
 val _ = export_theory();
