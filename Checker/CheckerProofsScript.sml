@@ -7,7 +7,7 @@ open preamble
      AuxRulesEquivProofsTheory
      RulesSpecTheory
      RulesIMPTheory
-     RulesProofTheory
+     RulesProofsTheory
      CheckerSpecTheory
      CheckerIMPTheory
  
