@@ -1,4 +1,4 @@
-INCLUDES = .. $(CAKEMLDIR)/compiler $(CAKEMLDIR)/basis
+INCLUDES =  $(CAKEMLDIR)/compiler $(CAKEMLDIR)/basis ../Tempo
 OPTIONS = QUIT_ON_FAILURE
 
 all: check_count check_countCompileTheory.uo
@@ -14,11 +14,11 @@ basis_ffi.c: $(CAKEMLDIR)/basis/basis_ffi.c
 
 ifdef POLY
 HOLHEAP = heap
-PARENT_HOLHEAP = ../heap
+PARENT_HOLHEAP = ../Tempo/heap
 EXTRA_CLEANS = $(HOLHEAP) $(HOLHEAP).o
 all: $(HOLHEAP)
 
-BARE_DEPS = ../check_countProgTheory
+BARE_DEPS = ../Tempo/check_countProgTheory
 
 DEPS = $(patsubst %,%.uo,$(BARE_DEPS)) $(PARENTHEAP)
 
