@@ -3,7 +3,7 @@ open preamble
      AuxRulesSpecTheory
      AuxRulesIMPTheory
      AuxRulesEquivProofsTheory
-    
+     
 val _ = new_theory "RulesSpec";
 
 (* The rules *)
@@ -54,15 +54,15 @@ val ELIM_CAND_def = Define `
         /\ (!d'. ((d' <> c) ==>
            (!l. (MEM (d',l) p ==> MEM (d',l) np) /\ (MEM (d',l) np ==> MEM (d',l) p)))) /\
     (j2 = NonFinal (nba, t, np, nbl, nbl2, e, nh))`;
-     
+      
     
 (* TRANSFER rule *)
 
 val TRANSFER_def = Define `
   TRANSFER ((qu,st,l):params) j1 j2 <=>
-    ? ba nba t nt p np bl nbl bl2 nbl2 e ne h nh.
+    ? ba nba t p np bl nbl bl2 nbl2 e h.
      (j1 = NonFinal (ba, t, p, bl, bl2, e, h))
-      /\ (TRANSFER_Auxiliary (qu,st,l) ba t nt p np bl bl2 nbl2 e ne h nh)
+      /\ (TRANSFER_Auxiliary (qu,st,l) ba t p np bl bl2 nbl2 e h)
     (*  /\ (ba = []) /\ (bl2 = []) /\ (nbl2 = []) *) 
       /\ ? l c.
               ((bl = c::l)
@@ -71,8 +71,8 @@ val TRANSFER_def = Define `
            /\ (MEM (c,[]) np)
            /\ (!d'. ((d' <> c) ==> (!l'. (MEM (d',l') p ==> MEM (d',l') np)
                             /\ (MEM (d',l') np ==> MEM (d',l') p)))))
-           /\ (j2 = NonFinal (nba, nt, np, nbl, nbl2, ne, nh))`;
-
+           /\ (j2 = NonFinal (nba, t, np, nbl, nbl2, e, h))`;
+ 
 (* COUNT rule *)
 
 val COUNT_def = Define `

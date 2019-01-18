@@ -1,5 +1,5 @@
 open preamble AuxSpecTheory AuxIMPTheory AuxRulesSpecTheory AuxRulesIMPTheory
-  
+   
 val _ = new_theory"RulesIMP";
 
 
@@ -12,7 +12,7 @@ val HWIN_dec_def = Define `
   (HWIN_dec ((qu,st,l):params) (NonFinal (_,_,_,_,_,e,h)) (Final e')
     ⇔ (e' = e ++ h) ∧ (LENGTH (e++h) ≤ st)) ∧
   (HWIN_dec _ _ _ = F)`;
-
+ 
 
 val ELIM_CAND_dec_def = Define `
   (ELIM_CAND_dec c ((qu,st,l):params)
@@ -27,15 +27,15 @@ val ELIM_CAND_dec_def = Define `
     /\ (subpile1 c p p') /\ (subpile2 c p' p))
    /\ (ELIM_CAND_dec c _ (Final _ ) _ = F)
    /\ (ELIM_CAND_dec c _ _ (Final _ ) = F)`;
-
+ 
 
 val TRANSFER_dec_def = Define `
   (TRANSFER_dec ((qu,st,l):params)
     (NonFinal (ba, t, p, bl, bl2, e, h))
     (NonFinal (ba', t', p', bl', bl2', e',h')) ⇔
-         (TRANSFER_Auxiliary_dec (qu,st,l) t p p' bl bl2 e h)
-      /\ (NULL bl2) /\ (NULL bl2') /\ (NULL ba)
-      /\ (h' = h) /\ (e = e') /\ (t = t')
+         (TRANSFER_Auxiliary_dec (qu,st,l) ba t t' p p' bl bl2 bl2' e e' h h')
+     (* /\ (NULL bl2) /\ (NULL bl2') /\ (NULL ba)
+      /\ (h' = h) /\ (e = e') /\ (t = t') *)
       /\ (case bl of [] => F | hbl::tbl =>
               (bl' = tbl)
            /\ (ba' = FLAT (get_cand_pile hbl p))
@@ -43,7 +43,7 @@ val TRANSFER_dec_def = Define `
            /\ (subpile1 hbl p p') /\ (subpile2 hbl p' p))) ∧
   (TRANSFER_dec _ (Final _) _ = F) /\
   (TRANSFER_dec _ _ (Final _) = F)`;
-
+ 
 
 val COUNT_dec_def = Define `
    (COUNT_dec ((qu, st, l): params)
