@@ -47,19 +47,26 @@ val ELIM_CAND_Auxiliary_def = Define `
 (* Auxiliary TRANSFER rule *)
 
 val TRANSFER_Auxiliary_def = Define `
-  TRANSFER_Auxiliary ((qu,st,l):params) (t: tallies)
+  TRANSFER_Auxiliary ((qu,st,l):params) (ba: ballots) (t: tallies) t'
                            (p: piles) (p': piles) (bl: cand list) (bl2: cand list) 
-                           (e: cand list) (h: cand list) <=>
+                           (bl2': cand list) e e' h h' <=>
         (bl2 = []) 
      /\ (bl <> [])
+     /\ (ba = [])
+     /\ (bl2' = [])
+     /\ (t' = t)
+     /\ (e' = e)
+     /\ (h' = h)
      /\ (LENGTH e < st)
      /\ (!d. MEM d (h++e) ==> MEM d l)
+     /\ (!d. MEM d bl ==> MEM d l)
      /\ ALL_DISTINCT (h++e)
      /\ (Valid_PileTally t l)
      /\ (Valid_PileTally p l)
      /\ (Valid_PileTally p' l)
      /\ (Valid_Init_CandList l)
      /\ ALL_DISTINCT (MAP FST t)
+     /\ ALL_DISTINCT (MAP FST p)
      /\ (!c'. (MEM c' h ==> (?x. MEM (c',x) t /\ ( x < qu))))`;
 
 (*

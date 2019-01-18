@@ -27,20 +27,27 @@ val ELIM_CAND_Auxiliary_dec_def = Define `
 
 
 val TRANSFER_Auxiliary_dec_def = Define `
-  (TRANSFER_Auxiliary_dec ((qu,st,l):params) (t: tallies)
-                           (p: piles) (p': piles) (bl: cand list) (bl2: cand list) 
-                           (e: cand list) (h: cand list))  ⇔
-      (NULL bl2) 
+  (TRANSFER_Auxiliary_dec ((qu,st,l):params) (ba: ballots) (t: tallies) t'
+                           (p: piles) (p': piles) (bl: cand list) (bl2: cand list)  
+                           (bl2': cand list) e e' h h')  ⇔
+      (NULL bl2)
+   /\ (e' = e)
+   /\ (h' = h)
+   /\ (t' = t)
    /\ (LENGTH e < st)
    /\ (list_MEM_dec (h++e) l)
+   /\ (list_MEM_dec bl l)
    /\ ALL_DISTINCT (h++e)
    /\ (Valid_PileTally_dec1 t l) /\ (Valid_PileTally_dec2 t l)
    /\ (Valid_PileTally_dec1 p l) /\ (Valid_PileTally_dec2 p l)
    /\ (Valid_PileTally_dec1 p' l) /\ (Valid_PileTally_dec2 p' l)
    /\ (¬(NULL l)) /\ (ALL_DISTINCT l)
    /\ (ALL_DISTINCT (MAP FST t))
+   /\ ALL_DISTINCT (MAP FST p)
    /\ (less_than_quota qu t h)
-   /\ (~ NULL bl)`;
+   /\ (~ NULL bl)
+   /\ (NULL ba)
+   /\ (NULL bl2')`;
 
 
 val COUNT_Auxiliary_dec_def = Define `

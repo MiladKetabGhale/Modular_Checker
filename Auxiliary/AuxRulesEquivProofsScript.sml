@@ -5,7 +5,7 @@ open preamble
      AuxRulesSpecTheory
      AuxRulesIMPTheory
      ratTheory
-                                
+                                   
   
 val _ = new_theory "AuxRulesEquivProofs"
        
@@ -24,7 +24,7 @@ val Logical_ElimAux_to_Functional = Q.store_thm ("Logical_ElimAux_to_Functional"
 		>> `!(l1:cand list) l2 (c':cand). MEM c' l1 \/ MEM c' l2 ==> MEM c' (l1++l2)`
                      by FULL_SIMP_TAC list_ss [MEM,MEM_APPEND]  
                 >> metis_tac[Logical_list_MEM_VICE_VERCA_TheFunctional,MEM_APPEND,MEM]);    
-  
+   
 
 (* the old proof when bl2 was captured to have more than one cand in it 
                >- (`!c'. MEM c' (h++e) ==> MEM c' l` by metis_tac [MEM,MEM_APPEND]  
@@ -73,32 +73,34 @@ val Functional_ElimAux_to_Logical = Q.store_thm ("Functional_ElimAux_to_Logical"
                          by metis_tac [MEM_APPEND,Logical_list_MEM_VICE_VERCA_TheFunctional]
                      >> `!d. MEM d h ==> MEM d (MAP FST t)` by metis_tac [PileTally_DEC2_IMP_PileTally]
                      >> metis_tac [PileTally_to_PileTally_DEC2,bigger_than_cand_LogicallyOK]));
-		     
-       
+ 		     
+        
 val Logical_TransferAux_to_Functional = Q.store_thm ("Logical_TransferAux_to_Functional",
- `! st qu l t p np bl bl2 e h. TRANSFER_Auxiliary (qu,st,l) t p np bl bl2 e h
-             ==> TRANSFER_Auxiliary_dec (qu,st,l) t p np bl bl2 e h`,
- 
+ `! st qu l ba t t' p np bl bl2 bl2' e e' h h'. TRANSFER_Auxiliary (qu,st,l) ba t t' p np bl bl2 bl2' e e' h h'
+             ==> TRANSFER_Auxiliary_dec (qu,st,l) ba t t' p np bl bl2 bl2' e e' h h'`,
+   
   REPEAT STRIP_TAC
    >> fs[TRANSFER_Auxiliary_def,TRANSFER_Auxiliary_dec_def]
-     >> (STRIP_TAC         
+     >> (STRIP_TAC              
         >- (`(!d. MEM d h \/ MEM d e ==> MEM d l) ==> (!d. MEM d (h++e) ==> MEM d l)`
-               by  FULL_SIMP_TAC list_ss [MEM_APPEND] >>
-               metis_tac [Logical_list_MEM_VICE_VERCA_TheFunctional])
-        >- fs[PileTally_to_PileTally_DEC1,Valid_PileTally_def,PileTally_to_PileTally_DEC2,NULL_EQ,NULL,
-	      Valid_Init_CandList_def,LogicalLessThanQu_IMP_less_than_quota,MEM]));
-      
-    
+               by  FULL_SIMP_TAC list_ss [MEM_APPEND] >>  
+               metis_tac [Logical_list_MEM_VICE_VERCA_TheFunctional])     
+        >- (fs[Logical_list_MEM_VICE_VERCA_TheFunctional]  
+	    >> fs[PileTally_to_PileTally_DEC1,Valid_PileTally_def,
+	       PileTally_to_PileTally_DEC2,NULL_EQ,NULL,
+	       Valid_Init_CandList_def,LogicalLessThanQu_IMP_less_than_quota,MEM])));
+         
+     
 val Functional_TransferAux_to_Logical = Q.store_thm("Functional_TransferAux_to_Logical",
- `! st qu l t p np bl bl2 e h. TRANSFER_Auxiliary_dec (qu,st,l) t p np bl bl2 e h
-                   ==> TRANSFER_Auxiliary (qu,st,l) t p np bl bl2 e h`,
-   
- (REPEAT STRIP_TAC >>
+ `! st qu l ba t t' p np bl bl2 bl2' e e' h h'. TRANSFER_Auxiliary_dec (qu,st,l) ba t t' p np bl bl2 bl2' e e' h h'
+                   ==> TRANSFER_Auxiliary (qu,st,l) ba t t' p np bl bl2 bl2' e e' h h'`,
+    
+ (REPEAT STRIP_TAC >> 
   fs[TRANSFER_Auxiliary_dec_def,TRANSFER_Auxiliary_def]
    >> fs[NULL,NULL_EQ,Valid_Init_CandList_def,NULL_EQ,MEM_APPEND,Logical_list_MEM_VICE_VERCA_TheFunctional,
         Valid_PileTally_def,PileTally_DEC1_to_PileTally,PileTally_DEC2_IMP_PileTally,
-	less_than_qu_IMP_LogicalLessThanQuota]  
-   >> REPEAT CONJ_TAC)                  
+	less_than_qu_IMP_LogicalLessThanQuota]   
+   >> REPEAT CONJ_TAC)                   
     >- metis_tac[MEM_APPEND,Logical_list_MEM_VICE_VERCA_TheFunctional] 
     >- metis_tac [Valid_PileTally_def,PileTally_DEC1_to_PileTally,PileTally_DEC2_IMP_PileTally] 
     >- metis_tac [Valid_PileTally_def,PileTally_DEC1_to_PileTally,PileTally_DEC2_IMP_PileTally] 
