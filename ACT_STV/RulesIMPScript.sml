@@ -33,8 +33,9 @@ val TRANSFER_dec_def = Define `
   (TRANSFER_dec ((qu,st,l):params)
     (NonFinal (ba, t, p, bl, bl2, e, h))
     (NonFinal (ba', t', p', bl', bl2', e',h')) ⇔
-       (NULL bl2) /\ (NULL bl2') /\ (NULL ba) /\ (e = e') /\ (h = h') /\ (t = t')
-   /\ (LENGTH e < st)
+       (*(NULL bl2) /\ (NULL bl2') /\ (NULL ba) /\ (e = e') /\ (h = h') /\ (t = t') *)
+      (TRANSFER_Auxiliary_dec (qu,st,l) ba t t' p p' bl bl2 bl2' e e' h h')
+  (* /\ (LENGTH e < st)
    /\ (list_MEM_dec (h++e) l)
    /\ ALL_DISTINCT (h++e)
    /\ (Valid_PileTally_dec1 t l) /\ (Valid_PileTally_dec2 t l)
@@ -42,8 +43,8 @@ val TRANSFER_dec_def = Define `
    /\ (Valid_PileTally_dec1 p' l) /\ (Valid_PileTally_dec2 p' l)
    /\ (¬(NULL l)) /\ (ALL_DISTINCT l)
    /\ (ALL_DISTINCT (MAP FST t))
-   /\ (less_than_quota qu t h)
-   /\ (ALL_DISTINCT (MAP FST p))
+   /\ (less_than_quota qu t h) 
+   /\ (ALL_DISTINCT (MAP FST p)) *)
    /\ (case bl of [] => F | hbl::tbl =>
          let gcp = get_cand_pile hbl p
            in

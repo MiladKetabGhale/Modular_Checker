@@ -5,21 +5,21 @@ open preamble  basis
      AuxRulesIMPTheory
      AuxRulesTransProgTheory
      RulesIMPTheory  
-    
+     
   
 val _ = new_theory "RulesTransProg";
 
 val _ = translation_extends"AuxRulesTransProg";
-   
+    
  
 val () = use_mem_intro := true;
- 
+  
 val r = translate ELIM_CAND_dec_def;   
-
-val r = translate COUNT_dec_def;  
  
+val r = translate COUNT_dec_def;  
+  
 val r = translate TRANSFER_dec_def;
-     
+      
 val r = translate TRANSFER_EXCLUDED_dec_def;
   
 val () = use_mem_intro := false;
@@ -34,11 +34,11 @@ val r = translate update_cand_pile_ACT_def;
 val r = translate ELECT_dec_def;
  
 val transfer_dec_side_def = fetch"-""transfer_dec_side_def";
- 
+  
 val transfer_dec_side = Q.prove(
   `transfer_dec_side a b c = T`,
   rw[definition"transfer_dec_side_def"]
-  >> fs[ALL_NON_EMPTY_def,MEM]) |> update_precondition;
+  >> fs[NULL,NULL_EQ]) |> update_precondition;
   
 
 val act_transvalue_side_def = fetch"-""act_transvalue_side_def";
