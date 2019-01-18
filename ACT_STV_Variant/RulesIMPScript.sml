@@ -33,9 +33,9 @@ val TRANSFER_dec_def = Define `
   (TRANSFER_dec ((qu,st,l):params)
     (NonFinal (ba, t, p, bl, bl2, e, h))
     (NonFinal (ba', t', p', bl', bl2', e',h')) ⇔
-         (TRANSFER_Auxiliary_dec (qu,st,l) t p p' bl bl2 e h)
-      /\ (NULL bl2) /\ (NULL bl2') /\ (NULL ba)
-      /\ (h' = h) /\ (e = e') /\ (t = t')
+         (TRANSFER_Auxiliary_dec (qu,st,l) ba t t' p p' bl bl2 bl2' e e' h h')
+ (*     /\ (NULL bl2) /\ (NULL bl2') /\ (NULL ba)
+      /\ (h' = h) /\ (e = e') /\ (t = t') *)
       /\ (case bl of [] => F | hbl::tbl =>
          (bl' = [])
          /\ (ba' = FLAT (get_cand_pile_list (hbl::tbl) p))

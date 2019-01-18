@@ -1,14 +1,13 @@
 open preamble
      AuxSpecTheory
      AuxRulesSpecTheory
-     AuxRulesTheory
      AuxRulesEquivProofsTheory
-     
+      
 
 val _ = new_theory "RulesSpec"
 
 (* EWIN rule *)
-
+ 
 val EWIN_def = Define `
   EWIN ((qu,st,l):params) j1 j2 =
     ∃u t p bl e h bl2.
@@ -26,7 +25,7 @@ val HWIN_def = Define `
        /\ ((LENGTH (e ++ h)) <= st)`;
 
 (* ELIMINATION rule *)
-
+ 
 val ELIM_CAND_def = Define `
   ELIM_CAND (c:cand) ((qu,st,l):params) j1 j2 <=>
     ?ba nba t p np bl nbl bl2 nbl2 e h nh.
@@ -46,10 +45,10 @@ val ELIM_CAND_def = Define `
 
 val TRANSFER_def = Define `
   TRANSFER ((qu,st,l):params) j1 j2 <=>
-    ? ba nba t p np bl nbl bl2 nbl2 e h.
+    ? ba nba t nt p np bl nbl bl2 nbl2 e ne h nh.
      (j1 = NonFinal (ba, t, p, bl, bl2, e, h))
-      /\ (TRANSFER_Auxiliary (qu,st,l) t p np bl bl2 e h)
-      /\ (ba = []) /\ (bl2 = []) /\ (nbl2 = [])
+      /\ (TRANSFER_Auxiliary (qu,st,l) ba t nt p np bl bl2 nbl2 e ne h nh)
+(*      /\ (ba = []) /\ (bl2 = []) /\ (nbl2 = []) *)
       /\ ? l c.
               ((bl = c::l)
            /\ (nbl = [])
@@ -58,8 +57,8 @@ val TRANSFER_def = Define `
            /\ (!d'. ((~ MEM d' bl) ==> (!l'. (MEM (d',l') p ==> MEM (d',l') np)
                             /\ (MEM (d',l') np ==> MEM (d',l') p)))))
 
-           /\ (j2 = NonFinal (nba, t, np, nbl, nbl2, e, h))`;
-
+           /\ (j2 = NonFinal (nba, nt, np, nbl, nbl2, ne, nh))`;
+ 
 (* COUNT rule *)
 
 val COUNT_def = Define `
@@ -78,7 +77,7 @@ val COUNT_def = Define `
                                            (get_cand_pile c np = get_cand_pile c p)
                                         /\ (get_cand_tally c nt = get_cand_tally c t))))
         /\ (j2 = NonFinal (nba, nt, np, nbl, nbl2, e, h)))`;
-
+ 
 
 val ELECT_def = Define `
   ELECT ((qu,st,l):params) j1 j2 <=>
@@ -100,16 +99,6 @@ val TRANSFER_EXCLUDED_def = Define `
     TRANSFER_EXCLUDED (qu,st,l) j1 j2 <=> TRANSFER_EXCLUDED_Auxiliary (qu,st,l) j1 j2`;
 
 
-
-(*
-val TRANSFER_EXCLUDED_def = Define `
-    TRANSFER_EXCLUDED (qu,st,l) j1 j2 <=>
-      (? ba nba t nt p np bl nbl bl2 nbl2 e ne h nh.
-          (j1 = NonFinal (ba,t,p,bl,bl2,e,h))
-       /\ (TRANSFER_EXCLUDED_Auxiliary (qu,st,l) nba t p np bl2 nbl2 e h)
-       /\ (ba = []) /\ (t = nt) /\ (e = ne) /\ (h = nh) /\ (bl = nbl)
-       /\ (j2 = NonFinal (nba,nt,np,nbl,nbl2,ne,nh))) /\ F`;
-*)
 
 
 val _ = export_theory ();
