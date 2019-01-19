@@ -5,7 +5,7 @@ open preamble
      AuxRulesSpecTheory
      AuxRulesIMPTheory
      ratTheory
-                                   
+                                    
   
 val _ = new_theory "AuxRulesEquivProofs"
        
@@ -112,8 +112,11 @@ val Functional_TransferAux_to_Logical = Q.store_thm("Functional_TransferAux_to_L
                          by metis_tac [MEM_APPEND,Logical_list_MEM_VICE_VERCA_TheFunctional]
 		     >> `!d. MEM d h ==> MEM d (MAP FST t)` by metis_tac [PileTally_DEC2_IMP_PileTally]
                      >> metis_tac[PileTally_to_PileTally_DEC2,less_than_qu_IMP_LogicalLessThanQuota]));  
-      
-
+  
+val Equiv_Functional_Logical_TransferAux = Q.store_thm("Equiv_Functional_Logical_TransferAux",
+ `TRANSFER_Auxiliary_dec = TRANSFER_Auxiliary`,
+simp[FUN_EQ_THM,Functional_TransferAux_to_Logical,Logical_TransferAux_to_Functional,FORALL_PROD,EQ_IMP_THM]);
+ 
 val Logical_CountAux_to_Functional = Q.store_thm ("Logical_CountAux_to_Functional",
  `! (st: num) (qu: rat) l ba nba t nt p np e h.
    COUNT_Auxiliary (qu,st,l) ba nba t nt p np e h ==> COUNT_Auxiliary_dec (qu,st,l) ba nba t nt p np e h`,
