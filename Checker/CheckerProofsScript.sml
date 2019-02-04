@@ -41,8 +41,8 @@ val No_Valid_Step_After_Final = Q.store_thm("No_Valid_Step_After_Final",
  
  REPEAT STRIP_TAC
   >> rfs[Valid_Step_def]
-        >- rfs[HWIN_dec_def] 
-        >- rfs[EWIN_dec_def] 
+        >- rfs[HWIN_dec_def,HWIN_Auxiliary_dec_def] 
+        >- rfs[EWIN_dec_def,EWIN_Auxiliary_dec_def] 
         >- rfs[COUNT_dec_def] 
         >- rfs[TRANSFER_dec_def] 
         >- rfs[ELECT_dec_def] 
