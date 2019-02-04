@@ -4,8 +4,8 @@ OPTIONS = QUIT_ON_FAILURE
 all: check_count check_countCompileTheory.uo
 .PHONY: all
 
-check_count: check_count.S basis_ffi.c Makefile
-	make
+check_count: check_count.S basis_ffi.c Makefile 
+	make check_count 
 
 check_count.S: *check_countCompileScript.sml
 
