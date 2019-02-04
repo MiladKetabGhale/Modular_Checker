@@ -1,5 +1,5 @@
 open preamble AuxSpecTheory AuxIMPTheory ratTheory 
-               
+                  
 val _ = new_theory "AuxEquivProofs";
 
 
@@ -931,6 +931,86 @@ val logical_to_functional_update_pile_ACT = Q.store_thm ("logical_to_functional_
             >> metis_tac [MEM])
           >- (`MEM (h,get_cand_pile h p2) p2` by metis_tac [MEM,GET_CAND_PILE_MEM]
             >> metis_tac [MEM])));
+         
+val ALL_EMPTY_Gives_Spec = Q.store_thm("ALL_EMPTY_Gives_Spec",
+ `! (p: piles). ALL_EMPTY p ==> (!c l. MEM (c,l) p ==> l = [])`, 
+
+Induct_on `p`
+ >- rw[]
+ >- (rw[] 
+  >- rfs[ALL_EMPTY_def,NULL,NULL_EQ] 
+  >- (rfs[ALL_EMPTY_def] >> metis_tac[]))); 
+   
+val Spec_Gives_ALL_EMPTY = Q.store_thm("Spec_Gives_ALL_EMPTY",
+`! (p: piles). (!c l. MEM (c,l) p ==> l = []) ==> ALL_EMPTY p`,
+
+Induct_on`p`
+ >- rw[ALL_EMPTY_def]
+ >- (rw[ALL_EMPTY_def]
+  >- (first_assum(qspecl_then [`FST h`,`SND h`] strip_assume_tac)
+     >> RW_TAC bool_ss[PAIR,PAIR_EQ] >> fs[NULL,NULL_EQ])
+  >- metis_tac[]));
+
+val List_Diff_to_Spec = Q.store_thm ("List_Diff_to_Spec",
+`! (l: cand list) l1 l2. List_Diff l1 l2 l ==> (!c. MEM c l2 ==> MEM c l /\ ~ MEM c l1)`, 
+
+Induct_on `l2`
+ >- rw[]
+ >- (REPEAT STRIP_TAC
+  >- (rfs[List_Diff_def] >> FULL_SIMP_TAC list_ss [EVERY_MEM])
+  >- (fs[List_Diff_def]
+    >- rfs[]
+    >- (FULL_SIMP_TAC list_ss [EVERY_MEM] >> metis_tac[])))); 
+
  
+val AuxProof_ListDiff = Q.store_thm("AuxProof_ListDiff",
+`!l. (~ (?d. MEM d l)) ==> l = [] /\ (l = [] ==> ~ (?d. MEM d l))`,
+ Induct_on`l`
+   >- rw[] 
+   >- (rw[] >>
+      (Cases_on `l` 
+       >- rfs[]
+       >- metis_tac[]))); 
+    
+val Spec_to_List_Diff = Q.store_thm("Spec_to_List_Diff",
+`!l l1 l2. (!c. MEM c l2 ==> MEM c l /\ ~ MEM c l1) ==> List_Diff l1 l2 l`,
+
+Induct_on `l2`
+ >- rw[List_Diff_def]
+ >- (rw[List_Diff_def]
+     >> metis_tac[List_Diff_def,MEM])); 
+    
+val TAKE_DROP_LENGTH_BACKLOG = Q.store_thm ("TAKE_DROP_LENGTH_BACKLOG",
+ `! bl nbl (l1: cand list). nbl = bl ++ l1 ==> (bl = TAKE (LENGTH bl) nbl) /\ (l1 = DROP (LENGTH bl) nbl)`, 
+  
+  REPEAT STRIP_TAC   
+   >- FULL_SIMP_TAC list_ss [TAKE_APPEND1,APPEND_11]    
+   >- (`TAKE (LENGTH bl) nbl = bl` by FULL_SIMP_TAC list_ss [TAKE_APPEND1,TAKE_LENGTH_ID]   
+        >> `nbl = (TAKE (LENGTH bl) nbl) ++ (DROP (LENGTH bl) nbl)` by  FULL_SIMP_TAC list_ss [TAKE_DROP]
+          >> metis_tac[APPEND_11]));  
+
+ 
+val DROP_LENGTH = Q.store_thm ("DROP_LENGTH",
+ `! bl (l1: cand list). DROP (LENGTH bl) (bl ++ l1) = l1`,
+ Induct_on `bl`
+   >- rw[]
+   >- (REPEAT STRIP_TAC 
+     >> FULL_SIMP_TAC list_ss [DROP,MEM]));
+
+ val PILES_EQ_to_Spec = Q.store_thm("PILES_EQ_to_Spec",
+`! p1 p2. PILES_EQ p1 p2 ==> (!x. MEM x p1 ==> MEM x p2) `,
+
+ Induct_on `p1`
+   >- rw[]
+   >- (rfs[PILES_EQ_def] >> metis_tac[PILES_EQ_def]));
+ 
+val Spec_to_PILES_EQ = Q.store_thm("Spec_to_PILES_EQ",
+`! p1 p2. (!x. MEM x p1 ==> MEM x p2) ==> PILES_EQ p1 p2`,
+ 
+ Induct_on`p1`
+   >- rw[PILES_EQ_def]
+   >- rfs[PILES_EQ_def]);
+ 
+
 
 val _ = export_theory();

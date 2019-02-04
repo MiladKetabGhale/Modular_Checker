@@ -1,5 +1,5 @@
 open preamble AuxSpecTheory AuxIMPTheory
-       
+        
 val _ = new_theory "AuxRulesSpec";
 
 (* The rules *)
@@ -17,14 +17,37 @@ val _ = new_theory "AuxRulesSpec";
        j2 is the judgement after the rule application
 *)
 
+(* EWIN rule *)
+
+val EWIN_Auxiliary_def = Define `
+  EWIN_Auxiliary ((qu,st,l):params) j1 j2 =
+    ∃u t p bl e h bl2.
+      (j1 = NonFinal (u, t, p, bl, bl2, e, h))
+      /\ (j2 = Final e) /\ ((LENGTH e = st) \/ (h = []))`;
+ 
+(* HWIN rule *)
+
+val HWIN_Auxiliary_def = Define `
+  HWIN_Auxiliary ((qu,st,l):params) j1 j2 =
+    ∃u t p bl e h bl2.
+       (j1 = NonFinal (u, t, p, bl, bl2, e, h))
+       /\ (j2 = Final (e++h))
+       /\ ((LENGTH (e ++ h)) <= st)`;
+ 
+
 
 (* Auxiliary ELIMINATION rule *)
   
 val ELIM_CAND_Auxiliary_def = Define `
-  ELIM_CAND_Auxiliary (c:cand) ((qu,st,l):params) (t: tallies) (p: piles) 
-                      (np: piles) (bl2: cand list) bl2' (e: cand list) 
+  ELIM_CAND_Auxiliary (c:cand) ((qu,st,l):params) ba (t: tallies) t' (p: piles) 
+                      (np: piles) bl bl' (bl2: cand list) (e: cand list) e' 
                       (h: cand list) nh <=>
         (bl2 = [])
+     /\ (ba = [])
+     /\ (bl = [])
+     /\ (bl' = [])
+     /\ (t' = t)
+     /\ (e' = e)
      /\ Valid_Init_CandList l
      /\ (!c'. MEM c' (h++e) ==> (MEM c' l))
      /\ ALL_DISTINCT (h++e)
@@ -38,7 +61,7 @@ val ELIM_CAND_Auxiliary_def = Define `
      /\ MEM c h
      /\ (!d. (MEM d h ==> (?x y. (MEM (c,x) t) /\ (MEM (d,y) t) /\ ( x <= y))))
      /\ equal_except c nh h`;
-
+   
 (* I am letting bl2 to have at most one cand in it at any time so no need to
  \/ ((~ (bl2 = [])) /\ (FLAT (get_cand_pile (HD bl2) p) = []))) *)
  
@@ -68,7 +91,7 @@ val TRANSFER_Auxiliary_def = Define `
      /\ ALL_DISTINCT (MAP FST t)
      /\ ALL_DISTINCT (MAP FST p)
      /\ (!c'. (MEM c' h ==> (?x. MEM (c',x) t /\ ( x < qu))))`;
-
+ 
 (*
 \/ ((bl2 <> []) /\ ((FLAT (get_cand_pile (HD bl2) p)) = [])))
 *)
@@ -77,7 +100,7 @@ val TRANSFER_Auxiliary_def = Define `
 
 val COUNT_Auxiliary_def = Define `
         (COUNT_Auxiliary ((qu, st, l): params) (ba: ballots) (ba': ballots) (t: tallies)
-                         (t': tallies) (p: piles) (p': piles) (e: cand list) (h: cand list)) <=> 
+                         (t': tallies) (p: piles) (p': piles) (bl: cand list) bl' (e: cand list) e' (h: cand list) h') <=> 
           (!d. MEM d (h++e) ==> MEM d l)
        /\ ALL_DISTINCT (h++e)
        /\ (Valid_PileTally t l)
@@ -91,13 +114,14 @@ val COUNT_Auxiliary_def = Define `
        /\ ALL_DISTINCT (MAP FST t')
        /\ (ba <> [])
        /\ (h <> [])
-       /\ (ba' = []) `;
-
+       /\ (ba' = [])
+       /\ (e' = e) /\ (h' = h) /\ (bl' = bl) `;
+ 
 (* Auxiliary ELECT rule *)
 
 val ELECT_Auxiliary_def = Define `
-  ELECT_Auxiliary ((qu,st,l):params) (ba: ballots) (t: tallies)
-                   (p: piles) (p': piles) bl bl' (e: cand list) e' (h: cand list) h' l1 <=>
+  ELECT_Auxiliary ((qu,st,l):params) (ba: ballots) (t: tallies) t'
+                   (p: piles) (p': piles) bl bl' bl2 bl2' (e: cand list) e' (h: cand list) h' l1 <=>
        (l1 <> [])
     /\ (SORTED (tally_comparison t) l1)
     /\ (!c. MEM c l1 ==> (!(r :rat). MEM (c,r) t ==> (qu <= r)))
@@ -122,8 +146,9 @@ val ELECT_Auxiliary_def = Define `
     /\ (Valid_PileTally p l)
     /\ (Valid_PileTally p' l)
     /\ (!c. MEM c e' ==> MEM c l)
-    /\ (!c. MEM c h ==> MEM c l)`;
-
+    /\ (!c. MEM c h ==> MEM c l)
+    /\ (t' = t) /\ (bl2' = bl2)`;
+ 
 
 val TRANSFER_EXCLUDED_Auxiliary_def = Define `
     TRANSFER_EXCLUDED_Auxiliary (qu,st,l) j1 j2 <=>
@@ -151,7 +176,7 @@ val TRANSFER_EXCLUDED_Auxiliary_def = Define `
         /\ MEM (c, TAKE ((LENGTH xs) - 1) xs) p')
      /\ (j2 = NonFinal (ba',t',p',bl',bl2',e',h')))`;
 
-
+ 
 
 (*                      
 val TRANSFER_EXCLUDED_Auxiliary_def = Define `

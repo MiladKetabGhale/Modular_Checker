@@ -1,17 +1,29 @@
 open preamble AuxSpecTheory AuxIMPTheory
-     
+      
 val _ = new_theory "AuxRulesIMP";
 
  
+val EWIN_Auxiliary_dec_def = Define `
+  (EWIN_Auxiliary_dec ((qu,st,l):params) (NonFinal (_,_,_,_,_,e,h)) (Final e')
+     ⇔ (e = e') /\ ((LENGTH e = st) \/ (NULL h))) ∧
+  (EWIN_Auxiliary_dec _ _ _ ⇔ F)`;
+
+
+val HWIN_Auxiliary_dec_def = Define `
+  (HWIN_Auxiliary_dec ((qu,st,l):params) (NonFinal (_,_,_,_,_,e,h)) (Final e')
+    ⇔ (e' = e ++ h) ∧ (LENGTH (e++h) ≤ st)) ∧
+  (HWIN_Auxiliary_dec _ _ _ = F)`;
+ 
+
 val ELIM_CAND_Auxiliary_dec_def = Define `
-  (ELIM_CAND_Auxiliary_dec (c: cand) ((qu,st,l):params) (t: tallies)
-                           (p: piles) (p': piles) (bl2: cand list) bl2' 
-                           (e: cand list) (h: cand list) h') <=>  
+  (ELIM_CAND_Auxiliary_dec (c: cand) ((qu,st,l):params) (ba: ballots) (t: tallies) t'
+                           (p: piles) (p': piles) (bl: cand list) (bl': cand list) (bl2: cand list)  (e: cand list) e' (h: cand list) h') <=>  
      
               (NULL bl2) 
-          (* /\ (NULL ba) 
+           /\ (NULL ba) 
            /\ (NULL bl)
-           /\ (NULL bl') *) 
+           /\ (NULL bl')  
+           /\ (e' = e) /\ (t' = t) 
            /\ (LENGTH (e ++ h) > st) /\ (LENGTH e < st)
            /\ (¬(NULL l)) /\ (ALL_DISTINCT l)
            /\ (list_MEM_dec (h++e) l)
@@ -24,12 +36,12 @@ val ELIM_CAND_Auxiliary_dec_def = Define `
            /\ (less_than_quota qu t h)
            /\ (h' = equal_except_dec c h)
            /\ (bigger_than_cand c t h)`;
-
+ 
 
 val TRANSFER_Auxiliary_dec_def = Define `
   (TRANSFER_Auxiliary_dec ((qu,st,l):params) (ba: ballots) (t: tallies) t'
                            (p: piles) (p': piles) (bl: cand list) (bl2: cand list)  
-                           (bl2': cand list) e e' h h')  ⇔
+                           (bl2': cand list) (e: cand list) e' (h: cand list) h')  ⇔
       (NULL bl2)
    /\ (e' = e)
    /\ (h' = h)
@@ -52,7 +64,7 @@ val TRANSFER_Auxiliary_dec_def = Define `
 
 val COUNT_Auxiliary_dec_def = Define `
    (COUNT_Auxiliary_dec ((qu, st, l): params) (ba: ballots) (ba': ballots) (t: tallies)
-                         (t': tallies) (p: piles) (p': piles) (e: cand list) (h: cand list))  ⇔
+                         (t': tallies) (p: piles) (p': piles) (bl: cand list) bl' (e: cand list) e' (h: cand list)) h'  ⇔
    
        ALL_DISTINCT (h++e)
     /\ ALL_DISTINCT (MAP FST p)
@@ -67,7 +79,8 @@ val COUNT_Auxiliary_dec_def = Define `
     /\ ALL_DISTINCT (MAP FST t)
     /\ (~ NULL ba)
     /\ (~ NULL h)
-    /\ (NULL ba')`;
+    /\ (NULL ba')
+    /\ (e' = e) /\ (h' = h) /\ (bl' = bl)`;
 
 (*
 val ELECT_Auxiliary_dec = Define `
@@ -102,11 +115,11 @@ val ELECT_Auxiliary_dec = Define `
                 /\ (list_MEM_dec h l))`;
 
 *)
-
+ 
 
 val ELECT_Auxiliary_dec = Define `
-     (ELECT_Auxiliary_dec ((qu,st,l): params) (ba: ballots) (t: tallies)
-                          (p: piles) (p': piles) bl bl' (e: cand list) e' (h: cand list) h' l1 <=>
+     (ELECT_Auxiliary_dec ((qu,st,l): params) (ba: ballots) (t: tallies) t'
+                          (p: piles) (p': piles) bl bl' (bl2: cand list) bl2' (e: cand list) e' (h: cand list) h' l1 <=>
                    (l1 = DROP (LENGTH bl) bl')
                 /\ (SORTED (tally_comparison t) l1)
                 /\ ALL_DISTINCT (l1 ++ e)
@@ -133,7 +146,9 @@ val ELECT_Auxiliary_dec = Define `
                 /\ (Valid_PileTally_dec1 p' l) /\ (Valid_PileTally_dec2 p' l)
                 /\ (Valid_PileTally_dec1 t l) /\ (Valid_PileTally_dec2 t l)
                 /\ (list_MEM_dec e' l)
-                /\ (list_MEM_dec h l))`;
+                /\ (list_MEM_dec h l)
+                /\ (t = t')
+                /\ (bl2 = bl2'))`;
 
 val TRANSFER_EXCLUDED_Auxiliary_dec_def = Define `
     (TRANSFER_EXCLUDED_Auxiliary_dec (qu,st,l)
@@ -165,7 +180,7 @@ val TRANSFER_EXCLUDED_Auxiliary_dec_def = Define `
          | _ => F)) /\
     (TRANSFER_EXCLUDED_Auxiliary_dec _ (Final _) _ = F) /\
     (TRANSFER_EXCLUDED_Auxiliary_dec _ _ (Final _) = F) `;
-
+ 
 (*
 val TRANSFER_EXCLUDED_Auxiliary__dec_def = Define `
        TRANSFER_EXCLUDED_Auxiliary_dec ((qu,st,l):params) ba' (t: tallies)

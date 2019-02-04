@@ -1,7 +1,8 @@
 open preamble AuxSpecTheory
- 
-val _ = new_theory "AuxIMP";
 
+   
+val _ = new_theory "AuxIMP";
+  
 (* TODO: move to HOL *)
 val LRC_APPEND = Q.store_thm("LRC_APPEND",
   `∀l1 l2 x y.
@@ -61,6 +62,10 @@ val subpile_MEM_def = Define `
       EVERY (λp. if (~ (c = (FST p))) then MEM p p1 else T) ps`;
 
 
+val PILES_EQ_def = Define `
+    PILES_EQ (p1: piles) (p2:piles) <=>
+      EVERY (\c. MEM c p2) p1 `;
+
 val first_continuing_cand_dec_def = Define `
   (first_continuing_cand_dec (c:cand) ([]: cand list)  (h: cand list) ⇔ F) /\
   (first_continuing_cand_dec c (b0::bs) h =
@@ -115,7 +120,29 @@ val All_NON_EMPTY_def = Define `
 val ALL_NON_ZERO_def = Define `
     ALL_NON_ZERO p ls <=>
      EVERY(λl0. SUM_RAT (LAST (get_cand_pile l0 p)) <> 0) ls`;
+  
+val AppendAllAux_def = Define `
+     AppendAllAux (bs: ballots) x <=> bs ++ (FLAT (SND x))`;
+ 
+val APPEND_ALL_ACC_def = Define `
+    APPEND_ALL_ACC acc (p: piles) <=> FOLDL AppendAllAux acc p` ;
+ 
+val APPEND_ALL_def = Define `
+    APPEND_ALL p <=> APPEND_ALL_ACC [] p`;
+ 
 
+
+(*
+val ALL_EMPTY_def = Define `
+    ALL_EMPTY l p <=> EVERY (\c. if MEM c l then MEM (c,[]) p else F) l` ;
+*)
+
+val ALL_EMPTY_def = Define `
+    (ALL_EMPTY ([] : piles) <=> T) /\
+    (ALL_EMPTY (p0::ps) <=> (NULL (SND p0)) /\ (ALL_EMPTY ps)) `; 
+
+val List_Diff_def = Define `
+    List_Diff l1 l2 l <=> EVERY (\c. MEM c l /\ (~ MEM c l1)) l2`
 
 val update_cand_pile = Define `
           (update_cand_pile (qu: rat) t ([]: cand list) p1 p2 ⇔ T)

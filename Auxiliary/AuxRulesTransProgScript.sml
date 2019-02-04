@@ -4,7 +4,7 @@ open preamble basis
      AuxEquivProofsTheory
      AuxRulesIMPTheory
      AuxRulesEquivProofsTheory
-    
+     
    
 val _ = new_theory"AuxRulesTransProg";
 
@@ -13,7 +13,7 @@ val _ = new_theory"AuxRulesTransProg";
 
 val _ = translation_extends"basisProg";
  
-
+ 
 val r = translate SUM_RAT_def;
 
 val r = translate get_cand_tally_def;
@@ -23,7 +23,7 @@ val r = translate equal_except_dec_def;
 val r = translate bigger_than_cand_def;
 val r = translate get_cand_pile_def;
 val r = translate get_cand_pile_list_def;
-  
+   
 val () = use_mem_intro := true;
 
 val r = translate list_MEM_dec_def;
@@ -34,11 +34,11 @@ val r = translate subpile1_def;
 val r = translate subpile2_def;
 val r = translate ELIM_CAND_Auxiliary_dec_def;
 (* val r = translate ELIM_CAND_dec_def; *)
- 
+  
 val r = translate subpile1_BlMem_trans2_def;
 val r = translate subpile1_backlog_trans2_def;
 val r = translate subpile2_backlog_trans2_def;
- 
+  
 val r = translate first_continuing_cand_dec_def;
 val r = translate COUNTAux_dec_def;
 val r = translate COUNT_Auxiliary_dec_def;
@@ -62,12 +62,23 @@ val r = translate PART3_DEF;
 val r = translate QSORT3_DEF;
 val r = translate TRANSFER_EXCLUDED_Auxiliary_dec_def;
 (* val r = translate TRANSFER_EXCLUDED_dec_def; *)
- 
+
+val r = translate PILES_EQ_def;
+
+val r = translate AppendAllAux_def;
+val r = translate APPEND_ALL_ACC_def; 
+val r = translate APPEND_ALL_def; 
+
+val r = translate ALL_EMPTY_def; 
+
+val r = translate List_Diff_def;
+
+
 val () = use_mem_intro := false;
  
-(* val r = translate HWIN_dec_def;
-val r = translate EWIN_dec_def;
-*)
+val r = translate HWIN_Auxiliary_dec_def;
+val r = translate EWIN_Auxiliary_dec_def;
+
 
 val r = translate SORTED_DEF;
 val r = translate tally_comparison_def;
